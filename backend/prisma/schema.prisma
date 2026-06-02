@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  Admin
+  Tecnico
+  Rececionista
+}
+
+enum Estado {
+  Novo
+  EmTratamento
+  Concluido
+}
+
+enum Prioridade {
+  Baixa
+  Normal
+  Alta
+  Urgente
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  email        String   @unique
+  passwordHash String
+  role         Role
+  ativo        Boolean  @default(true)
+  criadoEm    DateTime @default(now())
+
+  tarefasCriadas      Task[] @relation("CriadoPor")
+  tarefasSolicitadas  Task[] @relation("TecnicoSolicitado")
+  tarefasEmTratamento Task[] @relation("EmTratamentoPor")
+  comentarios         TaskComment[]
+}
+
+model Task {
+  id                  Int        @id @default(autoincrement())
+  titulo              String
+  descricao           String?
+  cliente             String
+  contacto            String?
+  prioridade          Prioridade @default(Normal)
+  estado              Estado     @default(Novo)
+  criadoPorId         Int
+  tecnicoSolicitadoId Int?
+  emTratamentoPorId   Int?
+  dataCriacao         DateTime   @default(now())
+  dataConclusao       DateTime?
+  updatedAt           DateTime   @updatedAt
+
+  criadoPor         User  @relation("CriadoPor", fields: [criadoPorId], references: [id])
+  tecnicoSolicitado User? @relation("TecnicoSolicitado", fields: [tecnicoSolicitadoId], references: [id])
+  emTratamentoPor   User? @relation("EmTratamentoPor", fields: [emTratamentoPorId], references: [id])
+  comentarios       TaskComment[]
+}
+
+model TaskComment {
+  id          Int      @id @default(autoincrement())
+  taskId      Int
+  userId      Int
+  comentario  String
+  dataCriacao DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+}

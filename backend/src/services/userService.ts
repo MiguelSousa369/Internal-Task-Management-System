@@ -1,0 +1,87 @@
+import bcrypt from 'bcryptjs';
+import { prisma } from '../lib/prisma';
+import { Role } from '@prisma/client';
+
+const userSelect = {
+  id: true,
+  nome: true,
+  email: true,
+  role: true,
+  ativo: true,
+  criadoEm: true
+};
+
+export const findAll = async () => {
+  return prisma.user.findMany({ select: userSelect, orderBy: { nome: 'asc' } });
+};
+
+export const findById = async (id: number) => {
+  return prisma.user.findUnique({ where: { id }, select: userSelect });
+};
+
+export const findByEmail = async (email: string) => {
+  return prisma.user.findUnique({ where: { email } });
+};
+
+export const create = async (data: {
+  nome: string;
+  email: string;
+  password: string;
+  role: Role;
+}) => {
+  const exists = await prisma.user.findUnique({ where: { email: data.email } });
+  if (exists) {
+    const err: any = new Error('Email já está em uso');
+    err.status = 409;
+    throw err;
+  }
+
+  const passwordHash = await bcrypt.hash(data.password, 10);
+  return prisma.user.create({
+    data: { nome: data.nome, email: data.email, passwordHash, role: data.role },
+    select: userSelect
+  });
+};
+
+export const update = async (id: number, data: {
+  nome?: string;
+  email?: string;
+  password?: string;
+  role?: Role;
+  ativo?: boolean;
+}) => {
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) {
+    const err: any = new Error('Utilizador não encontrado');
+    err.status = 404;
+    throw err;
+  }
+
+  if (data.email && data.email !== user.email) {
+    const exists = await prisma.user.findUnique({ where: { email: data.email } });
+    if (exists) {
+      const err: any = new Error('Email já está em uso');
+      err.status = 409;
+      throw err;
+    }
+  }
+
+  const updateData: any = {};
+  if (data.nome !== undefined) updateData.nome = data.nome;
+  if (data.email !== undefined) updateData.email = data.email;
+  if (data.role !== undefined) updateData.role = data.role;
+  if (data.ativo !== undefined) updateData.ativo = data.ativo;
+  if (data.password !== undefined) updateData.passwordHash = await bcrypt.hash(data.password, 10);
+
+  return prisma.user.update({ where: { id }, data: updateData, select: userSelect });
+};
+
+export const remove = async (id: number) => {
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) {
+    const err: any = new Error('Utilizador não encontrado');
+    err.status = 404;
+    throw err;
+  }
+  return prisma.user.update({ where: { id }, data: { ativo: false }, select: userSelect });
+};

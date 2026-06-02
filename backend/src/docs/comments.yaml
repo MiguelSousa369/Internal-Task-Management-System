@@ -1,0 +1,49 @@
+tags:
+  - name: Comentários
+    description: Observações e contexto das tarefas
+
+paths:
+  /tasks/{id}/comments:
+    get:
+      tags: [Comentários]
+      summary: Listar comentários de uma tarefa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de comentários
+        '404':
+          description: Tarefa não encontrada
+    post:
+      tags: [Comentários]
+      summary: Adicionar comentário a uma tarefa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comentario]
+              properties:
+                comentario:
+                  type: string
+                  example: Cliente ficou de ligar amanhã de manhã.
+      responses:
+        '201':
+          description: Comentário adicionado
+        '404':
+          description: Tarefa não encontrada

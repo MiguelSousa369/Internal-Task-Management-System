@@ -1,0 +1,242 @@
+tags:
+  - name: Tarefas
+    description: Gestão de pedidos de suporte
+
+paths:
+  /tasks:
+    get:
+      tags: [Tarefas]
+      summary: Listar tarefas
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: estado
+          schema:
+            type: string
+            enum: [Novo, EmTratamento, Concluido]
+        - in: query
+          name: prioridade
+          schema:
+            type: string
+            enum: [Baixa, Normal, Alta, Urgente]
+        - in: query
+          name: emTratamentoPor
+          schema:
+            type: integer
+          description: ID do técnico responsável
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Pesquisa no título, descrição e cliente
+      responses:
+        '200':
+          description: Lista de tarefas ordenada por prioridade
+    post:
+      tags: [Tarefas]
+      summary: Criar tarefa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [titulo, cliente]
+              properties:
+                titulo:
+                  type: string
+                  example: Erro ao imprimir
+                descricao:
+                  type: string
+                  example: Cliente não consegue imprimir faturas
+                cliente:
+                  type: string
+                  example: Padaria Central Lda.
+                contacto:
+                  type: string
+                  example: 912 345 678
+                prioridade:
+                  type: string
+                  enum: [Baixa, Normal, Alta, Urgente]
+                  default: Normal
+                tecnicoSolicitadoId:
+                  type: integer
+                  nullable: true
+      responses:
+        '201':
+          description: Tarefa criada
+
+  /tasks/{id}:
+    get:
+      tags: [Tarefas]
+      summary: Obter detalhe da tarefa (inclui comentários)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dados completos da tarefa
+        '404':
+          description: Não encontrada
+    put:
+      tags: [Tarefas]
+      summary: Editar dados da tarefa (Técnico / Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                descricao:
+                  type: string
+                cliente:
+                  type: string
+                contacto:
+                  type: string
+                prioridade:
+                  type: string
+                  enum: [Baixa, Normal, Alta, Urgente]
+                tecnicoSolicitadoId:
+                  type: integer
+                  nullable: true
+      responses:
+        '200':
+          description: Tarefa atualizada
+        '404':
+          description: Não encontrada
+    delete:
+      tags: [Tarefas]
+      summary: Eliminar tarefa (apenas Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Tarefa eliminada
+        '404':
+          description: Não encontrada
+
+  /tasks/{id}/start:
+    put:
+      tags: [Tarefas]
+      summary: Assumir tarefa (Técnico / Admin)
+      description: Define o utilizador autenticado como responsável. Estado passa a EmTratamento.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tarefa assumida
+        '400':
+          description: Tarefa já concluída
+
+  /tasks/{id}/release:
+    put:
+      tags: [Tarefas]
+      summary: Libertar tarefa (Técnico / Admin)
+      description: Remove o responsável. Estado volta a Novo.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tarefa libertada
+        '400':
+          description: Tarefa já concluída
+
+  /tasks/{id}/priority:
+    put:
+      tags: [Tarefas]
+      summary: Alterar prioridade (todos os roles)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [prioridade]
+              properties:
+                prioridade:
+                  type: string
+                  enum: [Baixa, Normal, Alta, Urgente]
+      responses:
+        '200':
+          description: Prioridade atualizada
+
+  /tasks/{id}/complete:
+    put:
+      tags: [Tarefas]
+      summary: Concluir tarefa (Técnico / Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tarefa concluída
+        '400':
+          description: Tarefa já concluída
+
+  /tasks/{id}/reopen:
+    put:
+      tags: [Tarefas]
+      summary: Reabrir tarefa concluída (Técnico / Admin)
+      description: Estado volta a Novo e responsável é removido.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tarefa reaberta
+        '400':
+          description: Tarefa não está concluída
