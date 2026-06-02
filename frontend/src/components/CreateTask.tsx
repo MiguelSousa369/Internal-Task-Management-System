@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createTask, getUsers } from '../api/api';
-import { User } from '../App';
+import { createTask, getTecnicos } from '../api/api';
 
 interface Props {
   onClose: () => void;
@@ -16,14 +15,12 @@ export function CreateTask({ onClose, onCreated }: Props) {
     prioridade: 'Normal',
     tecnicoSolicitadoId: '',
   });
-  const [tecnicos, setTecnicos] = useState<User[]>([]);
+  const [tecnicos, setTecnicos] = useState<{ id: number; nome: string }[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getUsers()
-      .then((users: User[]) => setTecnicos(users.filter(u => u.role === 'Tecnico' && u.ativo)))
-      .catch(() => {/* sem permissão — ok */});
+    getTecnicos().then(setTecnicos).catch(() => {});
   }, []);
 
   const set = (field: string, value: string) =>

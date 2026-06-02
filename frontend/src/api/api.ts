@@ -26,6 +26,9 @@ export const login = (email: string, password: string) =>
 export const getUsers = () =>
   fetch(`${BASE_URL}/users`, { headers: headers(true) }).then(handle);
 
+export const getTecnicos = () =>
+  fetch(`${BASE_URL}/users/tecnicos`, { headers: headers(true) }).then(handle);
+
 export const createUser = (data: object) =>
   fetch(`${BASE_URL}/users`, {
     method: 'POST', headers: headers(true), body: JSON.stringify(data),
