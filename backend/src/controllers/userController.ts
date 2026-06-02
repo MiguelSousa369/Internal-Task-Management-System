@@ -12,6 +12,15 @@ export const getAll = async (_req: Request, res: Response, next: NextFunction) =
   }
 };
 
+export const getTecnicos = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const tecnicos = await userService.findTecnicos();
+    res.json(tecnicos);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getById = async (req: Request, res: Response, next: NextFunction) => {
   const paramResult = idParamSchema.safeParse(req.params);
   if (!paramResult.success) {

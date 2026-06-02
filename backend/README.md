@@ -190,15 +190,16 @@ O token expira ao fim de **8 horas**.
 |---|---|---|
 | POST | `/api/auth/login` | Login → devolve token JWT |
 
-### Utilizadores (Admin only)
+### Utilizadores
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| GET | `/api/users` | Listar utilizadores |
-| GET | `/api/users/:id` | Detalhe do utilizador |
-| POST | `/api/users` | Criar utilizador |
-| PUT | `/api/users/:id` | Editar utilizador |
-| DELETE | `/api/users/:id` | Desativar utilizador |
+| Método | Endpoint | Roles | Descrição |
+|---|---|---|---|
+| GET | `/api/users/tecnicos` | Todos | Listar técnicos ativos (id + nome) |
+| GET | `/api/users` | Admin | Listar todos os utilizadores |
+| GET | `/api/users/:id` | Admin | Detalhe do utilizador |
+| POST | `/api/users` | Admin | Criar utilizador |
+| PUT | `/api/users/:id` | Admin | Editar utilizador |
+| DELETE | `/api/users/:id` | Admin | Desativar utilizador |
 
 ### Tarefas
 

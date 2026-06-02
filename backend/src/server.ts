@@ -28,7 +28,7 @@ app.use(cors({
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 9999,
   message: { error: 'Demasiados pedidos a partir deste IP. Tente novamente mais tarde.' }
 });
 app.use(limiter);

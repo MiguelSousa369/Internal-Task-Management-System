@@ -15,6 +15,14 @@ export const findAll = async () => {
   return prisma.user.findMany({ select: userSelect, orderBy: { nome: 'asc' } });
 };
 
+export const findTecnicos = async () => {
+  return prisma.user.findMany({
+    where: { role: 'Tecnico', ativo: true },
+    select: { id: true, nome: true },
+    orderBy: { nome: 'asc' },
+  });
+};
+
 export const findById = async (id: number) => {
   return prisma.user.findUnique({ where: { id }, select: userSelect });
 };
