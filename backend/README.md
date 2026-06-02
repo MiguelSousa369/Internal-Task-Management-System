@@ -63,13 +63,23 @@ PORT=3000
 npx prisma migrate dev --name init
 ```
 
-### Popular com dados de exemplo
+### Criar o primeiro administrador
+
+Em ambiente de produção, usa este comando para criar o utilizador Admin inicial:
+
+```bash
+ADMIN_NOME="Administrador" ADMIN_EMAIL="admin@empresa.pt" ADMIN_PASSWORD="supersecret" npm run create-admin
+```
+
+O script valida que os três campos estão presentes, que a password tem mínimo 6 caracteres, e que o email ainda não existe na base de dados. Após criar o Admin, podes criar os restantes utilizadores através da aplicação.
+
+### Popular com dados de exemplo (apenas desenvolvimento)
 
 ```bash
 npx prisma db seed
 ```
 
-Este comando cria os seguintes utilizadores de teste:
+Este comando cria dados de teste. **Não usar em produção.**
 
 | Role | Email | Password |
 |---|---|---|
