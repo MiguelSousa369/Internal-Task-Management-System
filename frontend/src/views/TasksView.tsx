@@ -73,8 +73,8 @@ export function TasksView({ user, isAdmin, isTecnico }: Props) {
   const [showCreate, setShowCreate] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({ concluidas: true });
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError('');
     try {
       const params: Record<string, string> = {};
@@ -85,7 +85,7 @@ export function TasksView({ user, isAdmin, isTecnico }: Props) {
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar tarefas');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [search, filterEstado, filterPrioridade]);
 
@@ -93,6 +93,11 @@ export function TasksView({ user, isAdmin, isTecnico }: Props) {
     const t = setTimeout(load, search ? 350 : 0);
     return () => clearTimeout(t);
   }, [load, search]);
+
+  useEffect(() => {
+    const id = setInterval(() => load(true), 5_000);
+    return () => clearInterval(id);
+  }, [load]);
 
   const urgentes     = tasks.filter(t => t.prioridade === 'Urgente' && t.estado !== 'Concluido');
   const novas        = tasks.filter(t => t.prioridade !== 'Urgente' && t.estado === 'Novo');

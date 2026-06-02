@@ -105,6 +105,8 @@ Lista principal organizada em secções colapsáveis:
 
 Inclui pesquisa com debounce e filtros por estado e prioridade (combinados com AND).
 
+A lista atualiza automaticamente a cada **5 segundos** em background, sem recarregar a página nem mostrar skeletons.
+
 ### Dashboard (`dashboard`) — Admin
 Cinco contadores em tempo real: tarefas abertas, urgentes, sem responsável, em tratamento e concluídas hoje.
 
