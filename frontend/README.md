@@ -137,7 +137,7 @@ Tabela de utilizadores com criação, edição e desativação.
 | Editar tarefa | ✅ | ✅ | ❌ |
 | Concluir / Reabrir | ✅ | ✅ | ❌ |
 | Eliminar tarefa | ✅ | ❌ | ❌ |
-| Dashboard / Stats | ✅ | ❌ | ❌ |
+| Dashboard / Stats | ✅ | ✅ | ✅ |
 | Gerir utilizadores | ✅ | ❌ | ❌ |
 
 ---

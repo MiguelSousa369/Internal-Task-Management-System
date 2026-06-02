@@ -178,7 +178,7 @@ O token expira ao fim de **8 horas**.
 | Reabrir tarefa | ✅ | ✅ | ❌ |
 | Eliminar tarefa | ✅ | ❌ | ❌ |
 | Gerir utilizadores | ✅ | ❌ | ❌ |
-| Dashboard / Stats | ✅ | ❌ | ❌ |
+| Dashboard / Stats | ✅ | ✅ | ✅ |
 
 ---
 

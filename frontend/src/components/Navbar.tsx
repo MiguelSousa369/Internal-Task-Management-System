@@ -41,8 +41,8 @@ export function Navbar({ user, currentView, setView, isAdmin, onLogout }: Props)
         {/* Nav items */}
         <nav className="flex items-center gap-1 flex-1">
           {navItem('tasks', 'Tarefas')}
-          {isAdmin && navItem('dashboard', 'Dashboard')}
-          {isAdmin && navItem('stats', 'Estatísticas')}
+          {navItem('dashboard', 'Dashboard')}
+          {navItem('stats', 'Estatísticas')}
           {isAdmin && navItem('users', 'Utilizadores')}
         </nav>
 

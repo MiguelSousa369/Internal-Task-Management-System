@@ -5,9 +5,10 @@ import { requireRole } from '../middlewares/roleGuard';
 
 const router = Router();
 
+const allRoles  = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista'])];
 const adminOnly = [authGuard, requireRole(['Admin'])];
 
-router.get('/dashboard', ...adminOnly, getDashboard);
-router.get('/stats', ...adminOnly, getStats);
+router.get('/dashboard', ...allRoles, getDashboard);
+router.get('/stats',     ...allRoles, getStats);
 
 export default router;
