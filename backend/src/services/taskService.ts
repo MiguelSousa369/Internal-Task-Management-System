@@ -3,7 +3,6 @@ import { Estado, Prioridade, Prisma } from '@prisma/client';
 
 const taskWithRelations = {
   id: true,
-  titulo: true,
   descricao: true,
   cliente: true,
   contacto: true,
@@ -32,7 +31,6 @@ export const findAll = async (filters: TaskFilters) => {
   if (filters.emTratamentoPorId) where.emTratamentoPorId = filters.emTratamentoPorId;
   if (filters.search) {
     where.OR = [
-      { titulo: { contains: filters.search, mode: 'insensitive' } },
       { descricao: { contains: filters.search, mode: 'insensitive' } },
       { cliente: { contains: filters.search, mode: 'insensitive' } }
     ];
@@ -61,7 +59,6 @@ export const findById = async (id: number) => {
 };
 
 export const create = async (data: {
-  titulo: string;
   descricao?: string;
   cliente: string;
   contacto?: string;
@@ -71,7 +68,6 @@ export const create = async (data: {
 }) => {
   return prisma.task.create({
     data: {
-      titulo: data.titulo,
       descricao: data.descricao,
       cliente: data.cliente,
       contacto: data.contacto,
@@ -84,7 +80,6 @@ export const create = async (data: {
 };
 
 export const update = async (id: number, data: {
-  titulo?: string;
   descricao?: string;
   cliente?: string;
   contacto?: string;

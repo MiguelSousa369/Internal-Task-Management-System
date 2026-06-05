@@ -17,7 +17,7 @@ async function main() {
     prisma.user.create({
       data: {
         nome: 'Administrador',
-        email: 'admin@empresa.pt',
+        username: 'admin',
         passwordHash: await bcrypt.hash('admin123', 10),
         role: 'Admin'
       }
@@ -25,7 +25,7 @@ async function main() {
     prisma.user.create({
       data: {
         nome: 'João Silva',
-        email: 'joao@empresa.pt',
+        username: 'joao',
         passwordHash: await bcrypt.hash('joao123', 10),
         role: 'Tecnico'
       }
@@ -33,7 +33,7 @@ async function main() {
     prisma.user.create({
       data: {
         nome: 'Pedro Costa',
-        email: 'pedro@empresa.pt',
+        username: 'pedro',
         passwordHash: await bcrypt.hash('pedro123', 10),
         role: 'Tecnico'
       }
@@ -41,7 +41,7 @@ async function main() {
     prisma.user.create({
       data: {
         nome: 'Ana Receção',
-        email: 'recepcao@empresa.pt',
+        username: 'recepcao',
         passwordHash: await bcrypt.hash('recepcao123', 10),
         role: 'Rececionista'
       }
@@ -51,7 +51,6 @@ async function main() {
   console.log('A criar tarefas de exemplo...');
   const task1 = await prisma.task.create({
     data: {
-      titulo: 'Erro ao abrir o Primavera',
       descricao: 'Cliente não consegue abrir o software de faturação. Aparece erro na inicialização.',
       cliente: 'Padaria Central Lda.',
       contacto: '912 345 678',
@@ -65,11 +64,10 @@ async function main() {
 
   const task2 = await prisma.task.create({
     data: {
-      titulo: 'Impressora não imprime',
       descricao: 'A impressora da receção deixou de funcionar depois de atualização do Windows.',
       cliente: 'Clínica Saúde Total',
       contacto: '961 234 567',
-      prioridade: 'Alta',
+      prioridade: 'Normal',
       estado: 'Novo',
       criadoPorId: recepcao.id
     }
@@ -77,7 +75,6 @@ async function main() {
 
   const task3 = await prisma.task.create({
     data: {
-      titulo: 'Configurar novo computador',
       descricao: 'Instalação do sistema operativo e aplicações no novo computador do departamento de RH.',
       cliente: 'GestorRH Soluções S.A.',
       contacto: '253 789 456',
@@ -90,11 +87,10 @@ async function main() {
 
   await prisma.task.create({
     data: {
-      titulo: 'Email a não sincronizar no telemóvel',
       descricao: 'O email profissional deixou de sincronizar no iPhone após atualização do iOS.',
       cliente: 'João Ferreira',
       contacto: '934 567 890',
-      prioridade: 'Baixa',
+      prioridade: 'Normal',
       estado: 'Novo',
       criadoPorId: recepcao.id
     }
@@ -102,11 +98,10 @@ async function main() {
 
   await prisma.task.create({
     data: {
-      titulo: 'VPN sem acesso à rede interna',
       descricao: 'Trabalhador em teletrabalho não consegue aceder aos recursos internos via VPN.',
       cliente: 'Construtora Norte Lda.',
       contacto: '222 345 678',
-      prioridade: 'Alta',
+      prioridade: 'Urgente',
       estado: 'Concluido',
       criadoPorId: recepcao.id,
       emTratamentoPorId: joao.id,
@@ -142,10 +137,10 @@ async function main() {
 
   console.log('\nSeed concluído com sucesso!\n');
   console.log('Utilizadores criados:');
-  console.log(`  Admin        | admin@empresa.pt     | admin123`);
-  console.log(`  Técnico      | joao@empresa.pt      | joao123`);
-  console.log(`  Técnico      | pedro@empresa.pt     | pedro123`);
-  console.log(`  Rececionista | recepcao@empresa.pt  | recepcao123`);
+  console.log(`  Admin        | admin     | admin123`);
+  console.log(`  Técnico      | joao      | joao123`);
+  console.log(`  Técnico      | pedro     | pedro123`);
+  console.log(`  Rececionista | recepcao  | recepcao123`);
 }
 
 main()

@@ -12,8 +12,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   }
 
   try {
-    const { email, password } = result.data;
-    const authResult = await authService.login(email, password);
+    const { username, password } = result.data;
+    const authResult = await authService.login(username, password);
     res.json(authResult);
   } catch (error) {
     next(error);

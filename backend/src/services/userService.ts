@@ -5,7 +5,7 @@ import { Role } from '@prisma/client';
 const userSelect = {
   id: true,
   nome: true,
-  email: true,
+  username: true,
   role: true,
   ativo: true,
   criadoEm: true
@@ -27,33 +27,33 @@ export const findById = async (id: number) => {
   return prisma.user.findUnique({ where: { id }, select: userSelect });
 };
 
-export const findByEmail = async (email: string) => {
-  return prisma.user.findUnique({ where: { email } });
+export const findByUsername = async (username: string) => {
+  return prisma.user.findUnique({ where: { username } });
 };
 
 export const create = async (data: {
   nome: string;
-  email: string;
+  username: string;
   password: string;
   role: Role;
 }) => {
-  const exists = await prisma.user.findUnique({ where: { email: data.email } });
+  const exists = await prisma.user.findUnique({ where: { username: data.username } });
   if (exists) {
-    const err: any = new Error('Email já está em uso');
+    const err: any = new Error('Username já está em uso');
     err.status = 409;
     throw err;
   }
 
   const passwordHash = await bcrypt.hash(data.password, 10);
   return prisma.user.create({
-    data: { nome: data.nome, email: data.email, passwordHash, role: data.role },
+    data: { nome: data.nome, username: data.username, passwordHash, role: data.role },
     select: userSelect
   });
 };
 
 export const update = async (id: number, data: {
   nome?: string;
-  email?: string;
+  username?: string;
   password?: string;
   role?: Role;
   ativo?: boolean;
@@ -65,10 +65,10 @@ export const update = async (id: number, data: {
     throw err;
   }
 
-  if (data.email && data.email !== user.email) {
-    const exists = await prisma.user.findUnique({ where: { email: data.email } });
+  if (data.username && data.username !== user.username) {
+    const exists = await prisma.user.findUnique({ where: { username: data.username } });
     if (exists) {
-      const err: any = new Error('Email já está em uso');
+      const err: any = new Error('Username já está em uso');
       err.status = 409;
       throw err;
     }
@@ -76,7 +76,7 @@ export const update = async (id: number, data: {
 
   const updateData: any = {};
   if (data.nome !== undefined) updateData.nome = data.nome;
-  if (data.email !== undefined) updateData.email = data.email;
+  if (data.username !== undefined) updateData.username = data.username;
   if (data.role !== undefined) updateData.role = data.role;
   if (data.ativo !== undefined) updateData.ativo = data.ativo;
   if (data.password !== undefined) updateData.passwordHash = await bcrypt.hash(data.password, 10);

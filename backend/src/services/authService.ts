@@ -4,8 +4,8 @@ import * as userService from './userService';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'mudar_em_producao';
 
-export const login = async (email: string, password: string) => {
-  const user = await userService.findByEmail(email);
+export const login = async (username: string, password: string) => {
+  const user = await userService.findByUsername(username);
 
   if (!user) {
     const err: any = new Error('Credenciais inválidas');

@@ -8,11 +8,11 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const nome = process.env.ADMIN_NOME;
-  const email = process.env.ADMIN_EMAIL;
+  const username = process.env.ADMIN_USERNAME;
   const password = process.env.ADMIN_PASSWORD;
 
-  if (!nome || !email || !password) {
-    console.error('Uso: ADMIN_NOME="Nome" ADMIN_EMAIL="email" ADMIN_PASSWORD="pass" npm run create-admin');
+  if (!nome || !username || !password) {
+    console.error('Uso: ADMIN_NOME="Nome" ADMIN_USERNAME="username" ADMIN_PASSWORD="pass" npm run create-admin');
     process.exit(1);
   }
 
@@ -21,23 +21,23 @@ async function main() {
     process.exit(1);
   }
 
-  const exists = await prisma.user.findUnique({ where: { email } });
+  const exists = await prisma.user.findUnique({ where: { username } });
   if (exists) {
-    console.error(`Erro: já existe um utilizador com o email "${email}".`);
+    console.error(`Erro: já existe um utilizador com o username "${username}".`);
     process.exit(1);
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
   const admin = await prisma.user.create({
-    data: { nome, email, passwordHash, role: 'Admin' },
-    select: { id: true, nome: true, email: true, role: true }
+    data: { nome, username, passwordHash, role: 'Admin' },
+    select: { id: true, nome: true, username: true, role: true }
   });
 
   console.log('Admin criado com sucesso:');
-  console.log(`  ID:    ${admin.id}`);
-  console.log(`  Nome:  ${admin.nome}`);
-  console.log(`  Email: ${admin.email}`);
-  console.log(`  Role:  ${admin.role}`);
+  console.log(`  ID:       ${admin.id}`);
+  console.log(`  Nome:     ${admin.nome}`);
+  console.log(`  Username: ${admin.username}`);
+  console.log(`  Role:     ${admin.role}`);
 }
 
 main()
