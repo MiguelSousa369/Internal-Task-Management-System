@@ -17,9 +17,9 @@ const handle = async (res: Response) => {
 };
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
-export const login = (email: string, password: string) =>
+export const login = (username: string, password: string) =>
   fetch(`${BASE_URL}/auth/login`, {
-    method: 'POST', headers: headers(), body: JSON.stringify({ email, password }),
+    method: 'POST', headers: headers(), body: JSON.stringify({ username, password }),
   }).then(handle);
 
 // ── USERS ─────────────────────────────────────────────────────────────────────

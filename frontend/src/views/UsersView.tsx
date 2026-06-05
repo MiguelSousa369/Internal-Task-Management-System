@@ -15,7 +15,7 @@ const roleBadge: Record<string, string> = {
 
 interface UserFormData {
   nome: string;
-  email: string;
+  username: string;
   password: string;
   role: string;
   ativo?: boolean;
@@ -27,7 +27,7 @@ export function UsersView({ token: _token }: { token: string }) {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<User | null>(null);
-  const [form, setForm] = useState<UserFormData>({ nome: '', email: '', password: '', role: 'Tecnico' });
+  const [form, setForm] = useState<UserFormData>({ nome: '', username: '', password: '', role: 'Tecnico' });
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<User | null>(null);
@@ -44,14 +44,14 @@ export function UsersView({ token: _token }: { token: string }) {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ nome: '', email: '', password: '', role: 'Tecnico' });
+    setForm({ nome: '', username: '', password: '', role: 'Tecnico' });
     setFormError('');
     setShowForm(true);
   };
 
   const openEdit = (u: User) => {
     setEditing(u);
-    setForm({ nome: u.nome, email: u.email, password: '', role: u.role, ativo: u.ativo });
+    setForm({ nome: u.nome, username: u.username, password: '', role: u.role, ativo: u.ativo });
     setFormError('');
     setShowForm(true);
   };
@@ -62,7 +62,7 @@ export function UsersView({ token: _token }: { token: string }) {
     setSubmitting(true);
     try {
       if (editing) {
-        const data: Partial<UserFormData> = { nome: form.nome, email: form.email, role: form.role, ativo: form.ativo };
+        const data: Partial<UserFormData> = { nome: form.nome, username: form.username, role: form.role, ativo: form.ativo };
         if (form.password) data.password = form.password;
         await updateUser(editing.id, data);
       } else {
@@ -107,7 +107,7 @@ export function UsersView({ token: _token }: { token: string }) {
             <thead>
               <tr className="border-b border-gray-100 text-left">
                 <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Nome</th>
-                <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</th>
+                <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Username</th>
                 <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Role</th>
                 <th className="px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Estado</th>
                 <th className="px-5 py-3"></th>
@@ -117,7 +117,7 @@ export function UsersView({ token: _token }: { token: string }) {
               {users.map((u, i) => (
                 <tr key={u.id} className="hover:bg-gray-50 transition-colors animate-slide-up" style={{ animationDelay: `${i * 40}ms` }}>
                   <td className="px-5 py-3 font-medium text-gray-800">{u.nome}</td>
-                  <td className="px-5 py-3 text-gray-500">{u.email}</td>
+                  <td className="px-5 py-3 text-gray-500 font-mono text-xs">{u.username}</td>
                   <td className="px-5 py-3">
                     <span className={`badge ${roleBadge[u.role]}`}>{roleLabel[u.role]}</span>
                   </td>
@@ -156,8 +156,8 @@ export function UsersView({ token: _token }: { token: string }) {
                 <input className="form-input" value={form.nome} onChange={e => setForm(p => ({ ...p, nome: e.target.value }))} required autoFocus />
               </div>
               <div>
-                <label className="form-label">Email <span className="text-red-500">*</span></label>
-                <input type="email" className="form-input" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} required />
+                <label className="form-label">Username <span className="text-red-500">*</span></label>
+                <input className="form-input" value={form.username} onChange={e => setForm(p => ({ ...p, username: e.target.value }))} required autoComplete="off" />
               </div>
               <div>
                 <label className="form-label">Password {editing && <span className="text-gray-400 font-normal">(deixar em branco para não alterar)</span>}</label>

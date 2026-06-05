@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function Login({ onSuccess }: Props) {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export function Login({ onSuccess }: Props) {
     setError('');
     setLoading(true);
     try {
-      const res = await login(email, password);
+      const res = await login(username, password);
       onSuccess(res.token, res.user);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro ao iniciar sessão');
@@ -71,15 +71,16 @@ export function Login({ onSuccess }: Props) {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="form-label">Email</label>
+              <label className="form-label">Username</label>
               <input
-                type="email"
+                type="text"
                 className="form-input"
-                placeholder="email@litinfor.pt"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                placeholder="username"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
                 required
                 autoFocus
+                autoComplete="username"
               />
             </div>
             <div>

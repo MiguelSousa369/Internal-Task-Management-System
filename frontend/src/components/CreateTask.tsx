@@ -8,10 +8,9 @@ interface Props {
 
 export function CreateTask({ onClose, onCreated }: Props) {
   const [form, setForm] = useState({
-    titulo: '',
-    descricao: '',
     cliente: '',
     contacto: '',
+    descricao: '',
     prioridade: 'Normal',
     tecnicoSolicitadoId: '',
   });
@@ -32,10 +31,9 @@ export function CreateTask({ onClose, onCreated }: Props) {
     setLoading(true);
     try {
       await createTask({
-        titulo: form.titulo,
-        descricao: form.descricao || undefined,
         cliente: form.cliente,
         contacto: form.contacto || undefined,
+        descricao: form.descricao || undefined,
         prioridade: form.prioridade,
         tecnicoSolicitadoId: form.tecnicoSolicitadoId ? Number(form.tecnicoSolicitadoId) : undefined,
       });
@@ -63,29 +61,6 @@ export function CreateTask({ onClose, onCreated }: Props) {
             </div>
           )}
 
-          <div>
-            <label className="form-label">Título <span className="text-red-500">*</span></label>
-            <input
-              className="form-input"
-              placeholder="Descrição breve do problema"
-              value={form.titulo}
-              onChange={e => set('titulo', e.target.value)}
-              required
-              autoFocus
-            />
-          </div>
-
-          <div>
-            <label className="form-label">Descrição</label>
-            <textarea
-              className="form-textarea"
-              rows={3}
-              placeholder="Detalhe adicional sobre o pedido..."
-              value={form.descricao}
-              onChange={e => set('descricao', e.target.value)}
-            />
-          </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="form-label">Cliente <span className="text-red-500">*</span></label>
@@ -95,6 +70,7 @@ export function CreateTask({ onClose, onCreated }: Props) {
                 value={form.cliente}
                 onChange={e => set('cliente', e.target.value)}
                 required
+                autoFocus
               />
             </div>
             <div>
@@ -108,6 +84,17 @@ export function CreateTask({ onClose, onCreated }: Props) {
             </div>
           </div>
 
+          <div>
+            <label className="form-label">Descrição</label>
+            <textarea
+              className="form-textarea"
+              rows={3}
+              placeholder="Detalhe sobre o pedido..."
+              value={form.descricao}
+              onChange={e => set('descricao', e.target.value)}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="form-label">Prioridade</label>
@@ -116,9 +103,7 @@ export function CreateTask({ onClose, onCreated }: Props) {
                 value={form.prioridade}
                 onChange={e => set('prioridade', e.target.value)}
               >
-                <option value="Baixa">Baixa</option>
                 <option value="Normal">Normal</option>
-                <option value="Alta">Alta</option>
                 <option value="Urgente">Urgente</option>
               </select>
             </div>

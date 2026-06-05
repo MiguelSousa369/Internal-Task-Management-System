@@ -9,18 +9,17 @@ import { UsersView } from './views/UsersView';
 export interface User {
   id: number;
   nome: string;
-  email: string;
+  username: string;
   role: 'Admin' | 'Tecnico' | 'Rececionista';
   ativo: boolean;
 }
 
 export interface Task {
   id: number;
-  titulo: string;
   descricao?: string;
   cliente: string;
   contacto?: string;
-  prioridade: 'Baixa' | 'Normal' | 'Alta' | 'Urgente';
+  prioridade: 'Normal' | 'Urgente';
   estado: 'Novo' | 'EmTratamento' | 'Concluido';
   criadoPor: { id: number; nome: string };
   tecnicoSolicitado?: { id: number; nome: string } | null;

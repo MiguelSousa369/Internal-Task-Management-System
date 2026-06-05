@@ -11,7 +11,7 @@ const estadoLabel: Record<string, string> = {
 };
 
 const prioridadeIcon: Record<string, string> = {
-  Urgente: '🔥', Alta: '⚠️', Normal: '📋', Baixa: '🔽',
+  Urgente: '🔥', Normal: '📋',
 };
 
 function timeAgo(dateStr: string): string {
@@ -45,15 +45,15 @@ export function TaskCard({ task, onClick, style }: Props) {
         <span className="text-xs text-gray-400 shrink-0 mt-0.5">{timeAgo(task.dataCriacao)}</span>
       </div>
 
-      {/* Title */}
-      <h3 className="font-semibold text-gray-900 text-sm leading-snug line-clamp-2 mb-2">
-        {task.titulo}
-      </h3>
-
       {/* Client */}
-      <p className="text-xs font-medium text-gray-600 truncate">{task.cliente}</p>
+      <h3 className="font-semibold text-gray-900 text-sm leading-snug truncate mb-1">
+        {task.cliente}
+      </h3>
       {task.contacto && (
-        <p className="text-xs text-gray-400 truncate">{task.contacto}</p>
+        <p className="text-xs text-gray-400 truncate mb-1">{task.contacto}</p>
+      )}
+      {task.descricao && (
+        <p className="text-xs text-gray-500 line-clamp-2">{task.descricao}</p>
       )}
 
       {/* Footer */}

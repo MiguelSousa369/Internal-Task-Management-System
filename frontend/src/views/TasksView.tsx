@@ -135,9 +135,7 @@ export function TasksView({ user, isAdmin, isTecnico }: Props) {
           <select className="form-select w-auto" value={filterPrioridade} onChange={e => setFilterPrioridade(e.target.value)}>
             <option value="">Todas as prioridades</option>
             <option value="Urgente">🔥 Urgente</option>
-            <option value="Alta">⚠️ Alta</option>
             <option value="Normal">📋 Normal</option>
-            <option value="Baixa">🔽 Baixa</option>
           </select>
         </div>
         <button className="btn-accent shrink-0" onClick={() => setShowCreate(true)}>

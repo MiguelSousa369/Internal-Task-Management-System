@@ -39,7 +39,7 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
   const [submitting, setSubmitting] = useState(false);
   const [confirm, setConfirm] = useState<null | { title: string; message: string; action: () => Promise<void>; danger?: boolean }>(null);
   const [editing, setEditing] = useState(false);
-  const [editForm, setEditForm] = useState({ titulo: '', descricao: '', cliente: '', contacto: '', prioridade: 'Normal', tecnicoSolicitadoId: '' });
+  const [editForm, setEditForm] = useState({ descricao: '', cliente: '', contacto: '', prioridade: 'Normal', tecnicoSolicitadoId: '' });
 
   const load = useCallback(async () => {
     try {
@@ -66,7 +66,6 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
   useEffect(() => {
     if (task && editing) {
       setEditForm({
-        titulo: task.titulo,
         descricao: task.descricao ?? '',
         cliente: task.cliente,
         contacto: task.contacto ?? '',
@@ -106,7 +105,6 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await runAction(() => updateTask(taskId, {
-      titulo: editForm.titulo,
       descricao: editForm.descricao || undefined,
       cliente: editForm.cliente,
       contacto: editForm.contacto || undefined,
@@ -156,7 +154,10 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                 <span className={`badge badge-${task.prioridade}`}>{task.prioridade}</span>
                 <span className={`badge badge-${task.estado}`}>{estadoLabel[task.estado]}</span>
               </div>
-              <h2 className="font-semibold text-gray-900 text-base leading-snug">{task.titulo}</h2>
+              <h2 className="font-semibold text-gray-900 text-base leading-snug">{task.cliente}</h2>
+              {task.contacto && (
+                <p className="text-sm text-gray-400 mt-0.5">{task.contacto}</p>
+              )}
             </div>
             <button onClick={onClose} className="btn-ghost btn-sm shrink-0">✕</button>
           </div>
@@ -172,14 +173,6 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
             {editing ? (
               <form onSubmit={handleEditSubmit} className="space-y-3 bg-gray-50 rounded-xl p-4">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Editar Tarefa</p>
-                <div>
-                  <label className="form-label">Título</label>
-                  <input className="form-input" value={editForm.titulo} onChange={e => setEditForm(p => ({ ...p, titulo: e.target.value }))} required />
-                </div>
-                <div>
-                  <label className="form-label">Descrição</label>
-                  <textarea className="form-textarea" rows={2} value={editForm.descricao} onChange={e => setEditForm(p => ({ ...p, descricao: e.target.value }))} />
-                </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="form-label">Cliente</label>
@@ -190,11 +183,16 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                     <input className="form-input" value={editForm.contacto} onChange={e => setEditForm(p => ({ ...p, contacto: e.target.value }))} />
                   </div>
                 </div>
+                <div>
+                  <label className="form-label">Descrição</label>
+                  <textarea className="form-textarea" rows={2} value={editForm.descricao} onChange={e => setEditForm(p => ({ ...p, descricao: e.target.value }))} />
+                </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="form-label">Prioridade</label>
                     <select className="form-select" value={editForm.prioridade} onChange={e => setEditForm(p => ({ ...p, prioridade: e.target.value }))}>
-                      {['Baixa','Normal','Alta','Urgente'].map(p => <option key={p}>{p}</option>)}
+                      <option value="Normal">Normal</option>
+                      <option value="Urgente">Urgente</option>
                     </select>
                   </div>
                   <div>
@@ -213,16 +211,6 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
             ) : (
               /* Task info */
               <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Cliente</p>
-                  <p className="font-medium text-gray-800">{task.cliente}</p>
-                </div>
-                {task.contacto && (
-                  <div>
-                    <p className="text-xs text-gray-400 mb-0.5">Contacto</p>
-                    <p className="font-medium text-gray-800">{task.contacto}</p>
-                  </div>
-                )}
                 <div>
                   <p className="text-xs text-gray-400 mb-0.5">Criado por</p>
                   <p className="font-medium text-gray-800">{task.criadoPor.nome}</p>
@@ -312,7 +300,8 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                     value={task.prioridade}
                     onChange={e => runAction(() => updateTaskPriority(task.id, e.target.value))}
                   >
-                    {['Baixa','Normal','Alta','Urgente'].map(p => <option key={p}>{p}</option>)}
+                    <option value="Normal">Normal</option>
+                    <option value="Urgente">Urgente</option>
                   </select>
                 </div>
                 {/* Editar */}

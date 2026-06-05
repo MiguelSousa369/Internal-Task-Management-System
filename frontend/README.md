@@ -72,7 +72,7 @@ frontend/
 
 ## Autenticação
 
-Sem autenticação, o utilizador vê apenas a página de login.
+Sem autenticação, o utilizador vê apenas a página de login (campo username + password).
 
 Após login bem-sucedido, o token JWT e os dados do utilizador ficam guardados em `localStorage`. Todas as chamadas à API enviam o token no header `Authorization: Bearer <token>`.
 
@@ -99,8 +99,8 @@ Lista principal organizada em secções colapsáveis:
 | Secção | Conteúdo |
 |---|---|
 | 🔥 Urgentes | Tarefas com prioridade Urgente não concluídas — sempre no topo |
-| 📥 Novas | Tarefas sem responsável (exceto Urgentes) |
-| 🔧 Em Tratamento | Tarefas com técnico atribuído (exceto Urgentes) |
+| 📥 Novas | Tarefas com prioridade Normal sem responsável |
+| 🔧 Em Tratamento | Tarefas com prioridade Normal com técnico atribuído |
 | ✅ Concluídas | Oculta por defeito — clicar para expandir |
 
 Inclui pesquisa com debounce e filtros por estado e prioridade (combinados com AND).
