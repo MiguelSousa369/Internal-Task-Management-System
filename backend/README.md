@@ -68,10 +68,10 @@ npx prisma migrate dev --name init
 Em ambiente de produção, usa este comando para criar o utilizador Admin inicial:
 
 ```bash
-ADMIN_NOME="Administrador" ADMIN_EMAIL="admin@empresa.pt" ADMIN_PASSWORD="supersecret" npm run create-admin
+ADMIN_NOME="Administrador" ADMIN_USERNAME="admin" ADMIN_PASSWORD="supersecret" npm run create-admin
 ```
 
-O script valida que os três campos estão presentes, que a password tem mínimo 6 caracteres, e que o email ainda não existe na base de dados. Após criar o Admin, podes criar os restantes utilizadores através da aplicação.
+O script valida que os três campos estão presentes, que a password tem mínimo 6 caracteres, e que o username ainda não existe na base de dados. Após criar o Admin, podes criar os restantes utilizadores através da aplicação.
 
 ### Popular com dados de exemplo (apenas desenvolvimento)
 
@@ -81,12 +81,12 @@ npx prisma db seed
 
 Este comando cria dados de teste. **Não usar em produção.**
 
-| Role | Email | Password |
+| Role | Username | Password |
 |---|---|---|
-| Admin | admin@empresa.pt | admin123 |
-| Técnico | joao@empresa.pt | joao123 |
-| Técnico | pedro@empresa.pt | pedro123 |
-| Rececionista | recepcao@empresa.pt | recepcao123 |
+| Admin | admin | admin123 |
+| Técnico | joao | joao123 |
+| Técnico | pedro | pedro123 |
+| Rececionista | recepcao | recepcao123 |
 
 ---
 
@@ -244,7 +244,7 @@ GET /api/tasks?search=primavera
 GET /api/tasks?estado=EmTratamento&prioridade=Alta
 ```
 
-As tarefas são ordenadas por **prioridade descendente** (Urgente → Alta → Normal → Baixa) e depois por **data de criação ascendente**.
+As tarefas são ordenadas por **prioridade descendente** (Urgente → Normal) e depois por **data de criação ascendente**.
 
 ---
 
