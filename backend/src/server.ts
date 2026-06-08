@@ -54,4 +54,6 @@ app.use(errorHandler);
 
 export default app;
 
-app.listen(PORT, () => logger.info(`Server running on http://localhost:${PORT}`));
+app.listen(Number(PORT), '0.0.0.0', () => {
+  logger.info(`Server running on http://0.0.0.0:${PORT}`);
+});
