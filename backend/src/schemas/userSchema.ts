@@ -4,14 +4,14 @@ export const createUserSchema = z.object({
   nome: z.string().min(1, 'Nome é obrigatório'),
   username: z.string().min(3, 'Username deve ter pelo menos 3 caracteres').regex(/^\S+$/, 'Username não pode ter espaços'),
   password: z.string().min(6, 'Password deve ter pelo menos 6 caracteres'),
-  role: z.enum(['Admin', 'Tecnico', 'Rececionista'])
+  role: z.enum(['Admin', 'Tecnico', 'Rececionista', 'TV'])
 });
 
 export const updateUserSchema = z.object({
   nome: z.string().min(1).optional(),
   username: z.string().min(3).regex(/^\S+$/).optional(),
   password: z.string().min(6).optional(),
-  role: z.enum(['Admin', 'Tecnico', 'Rececionista']).optional(),
+  role: z.enum(['Admin', 'Tecnico', 'Rececionista', 'TV']).optional(),
   ativo: z.boolean().optional()
 });
 

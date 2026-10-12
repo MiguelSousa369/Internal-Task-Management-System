@@ -43,7 +43,7 @@ paths:
                         type: string
                       role:
                         type: string
-                        enum: [Admin, Tecnico, Rececionista]
+                        enum: [Admin, Tecnico, Rececionista, TV]
         '401':
           description: Credenciais inválidas
         '403':

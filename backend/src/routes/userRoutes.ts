@@ -7,7 +7,7 @@ const router = Router();
 
 const adminOnly = [authGuard, requireRole(['Admin'])];
 
-router.get('/tecnicos', authGuard, getTecnicos);
+router.get('/tecnicos', authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista']), getTecnicos);
 router.get('/', ...adminOnly, getAll);
 router.get('/:id', ...adminOnly, getById);
 router.post('/', ...adminOnly, create);

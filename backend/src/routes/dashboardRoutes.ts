@@ -6,9 +6,10 @@ import { requireRole } from '../middlewares/roleGuard';
 const router = Router();
 
 const allRoles  = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista'])];
-const adminOnly = [authGuard, requireRole(['Admin'])];
+// O perfil TV (ecrã na parede) vê os contadores.
+const viewRoles = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista', 'TV'])];
 
-router.get('/dashboard', ...allRoles, getDashboard);
+router.get('/dashboard', ...viewRoles, getDashboard);
 router.get('/stats',     ...allRoles, getStats);
 
 export default router;

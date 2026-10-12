@@ -42,7 +42,7 @@ paths:
                   example: maria123
                 role:
                   type: string
-                  enum: [Admin, Tecnico, Rececionista]
+                  enum: [Admin, Tecnico, Rececionista, TV]
       responses:
         '201':
           description: Utilizador criado
@@ -93,7 +93,7 @@ paths:
                   minLength: 6
                 role:
                   type: string
-                  enum: [Admin, Tecnico, Rececionista]
+                  enum: [Admin, Tecnico, Rececionista, TV]
                 ativo:
                   type: boolean
       responses:

@@ -35,6 +35,8 @@ services:
     env_file: .env
     environment:
       NODE_ENV: production
+      # "Hoje" (concluídas hoje, estatísticas) à hora de Portugal, não em UTC.
+      TZ: Europe/Lisbon
       PORT: '3000'
       DATABASE_URL: postgresql://tarefas:${POSTGRES_PASSWORD}@db:5432/tarefas
       JWT_SECRET: ${JWT_SECRET:?corre primeiro o setup}

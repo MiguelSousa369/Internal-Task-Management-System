@@ -17,11 +17,13 @@ import { requireRole } from '../middlewares/roleGuard';
 const router = Router();
 
 const allRoles = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista'])];
+// O perfil TV (ecrã na parede) só vê a lista de tarefas.
+const viewRoles = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista', 'TV'])];
 const tecnicoOrAdmin = [authGuard, requireRole(['Admin', 'Tecnico'])];
 const anyAuthenticated = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista'])];
 const adminOnly = [authGuard, requireRole(['Admin'])];
 
-router.get('/', ...allRoles, getAll);
+router.get('/', ...viewRoles, getAll);
 router.get('/:id', ...allRoles, getById);
 router.post('/', ...allRoles, create);
 router.put('/:id', ...tecnicoOrAdmin, update);
