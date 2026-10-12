@@ -5,13 +5,14 @@ import { User } from '../App';
 import { ConfirmModal } from '../components/ConfirmModal';
 
 const roleLabel: Record<string, string> = {
-  Admin: 'Admin', Tecnico: 'Técnico', Rececionista: 'Rececionista',
+  Admin: 'Admin', Tecnico: 'Técnico', Rececionista: 'Rececionista', TV: 'TV',
 };
 
 const roleBadge: Record<string, string> = {
   Admin:        'bg-purple-100 text-purple-700 border border-purple-200',
   Tecnico:      'bg-blue-100 text-blue-700 border border-blue-200',
   Rececionista: 'bg-gray-100 text-gray-600 border border-gray-200',
+  TV:           'bg-amber-50 text-amber-700 border border-amber-200',
 };
 
 interface UserFormData {
@@ -177,6 +178,7 @@ export function UsersView({ token: _token }: { token: string }) {
                     <option value="Tecnico">Técnico</option>
                     <option value="Rececionista">Rececionista</option>
                     <option value="Admin">Admin</option>
+                    <option value="TV">TV (ecrã, só visualização)</option>
                   </select>
                 </div>
                 {editing && (

@@ -1,4 +1,4 @@
-import { ListTodo, LayoutDashboard, ChartColumn, Users, LogOut, type LucideIcon } from 'lucide-react';
+import { ListTodo, LayoutDashboard, ChartColumn, Users, LogOut, Tv, type LucideIcon } from 'lucide-react';
 import { User, View } from '../App';
 import logo from '../assets/logo.png';
 
@@ -8,17 +8,18 @@ interface Props {
   setView: (v: View) => void;
   isAdmin: boolean;
   onLogout: () => void;
+  onTvMode: () => void;
 }
 
 const roleLabel: Record<string, string> = {
-  Admin: 'Administrador', Tecnico: 'Técnico', Rececionista: 'Rececionista',
+  Admin: 'Administrador', Tecnico: 'Técnico', Rececionista: 'Rececionista', TV: 'TV',
 };
 
 function initials(nome: string) {
   return nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
 }
 
-export function Navbar({ user, currentView, setView, isAdmin, onLogout }: Props) {
+export function Navbar({ user, currentView, setView, isAdmin, onLogout, onTvMode }: Props) {
   const navItem = (view: View, label: string, Icon: LucideIcon) => (
     <button
       key={view}
@@ -53,6 +54,10 @@ export function Navbar({ user, currentView, setView, isAdmin, onLogout }: Props)
           {navItem('stats', 'Estatísticas', ChartColumn)}
           {isAdmin && navItem('users', 'Utilizadores', Users)}
         </nav>
+
+        <button onClick={onTvMode} className="btn-icon shrink-0" title="Modo TV" aria-label="Modo TV">
+          <Tv className="w-4 h-4" />
+        </button>
 
         {/* User */}
         <div className="flex items-center gap-3 shrink-0">
