@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import * as commentService from '../services/commentService';
-import { createCommentSchema, idParamSchema } from '../schemas/commentSchema';
+import { createCommentSchema, idParamSchema, commentParamSchema } from '../schemas/commentSchema';
 import { AuthenticatedRequest } from '../middlewares/authGuard';
 
 export const getByTask = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -42,6 +42,27 @@ export const create = async (req: AuthenticatedRequest, res: Response, next: Nex
       bodyResult.data.comentario
     );
     res.status(201).json(comment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const remove = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const paramResult = commentParamSchema.safeParse(req.params);
+  if (!paramResult.success) {
+    const err: any = new Error('ID inválido');
+    err.status = 400;
+    return next(err);
+  }
+
+  try {
+    await commentService.remove(
+      paramResult.data.id,
+      paramResult.data.commentId,
+      req.user!.id,
+      req.user!.role
+    );
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

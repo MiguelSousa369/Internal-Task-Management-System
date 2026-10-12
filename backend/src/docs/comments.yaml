@@ -47,3 +47,28 @@ paths:
           description: Comentário adicionado
         '404':
           description: Tarefa não encontrada
+
+  /tasks/{id}/comments/{commentId}:
+    delete:
+      tags: [Comentários]
+      summary: Apagar um comentário (autor ou Admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Comentário apagado
+        '403':
+          description: Sem permissão (não é o autor nem Admin)
+        '404':
+          description: Comentário não encontrado

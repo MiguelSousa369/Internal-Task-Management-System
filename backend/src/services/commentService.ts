@@ -26,3 +26,21 @@ export const create = async (taskId: number, userId: number, comentario: string)
     include: { user: { select: { id: true, nome: true } } }
   });
 };
+
+// Só o autor do comentário ou um Admin o podem apagar.
+export const remove = async (taskId: number, commentId: number, userId: number, userRole: string) => {
+  const comment = await prisma.taskComment.findUnique({ where: { id: commentId } });
+  if (!comment || comment.taskId !== taskId) {
+    const err: any = new Error('Comentário não encontrado');
+    err.status = 404;
+    throw err;
+  }
+
+  if (userRole !== 'Admin' && userId !== comment.userId) {
+    const err: any = new Error('Sem permissão para apagar este comentário');
+    err.status = 403;
+    throw err;
+  }
+
+  await prisma.taskComment.delete({ where: { id: commentId } });
+};
