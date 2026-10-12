@@ -82,6 +82,27 @@ Autoridades de Certificação de Raiz Fidedignas).
 A autoridade é válida por 10 anos e fica no volume `caddy-data` — **não apagar esse volume**, ou é
 criada uma nova e é preciso repetir este passo em todos os PCs.
 
+## Ecrã TV
+
+Para ter as tarefas numa TV na parede (um PC, mini-PC ou TV com browser ligado a ela):
+
+1. Na aplicação, em **Utilizadores**, criar um utilizador com o perfil **TV** (ex.: `tvsala`). Só
+   consegue ver: não abre tarefas nem altera nada.
+2. Nesse PC, [confiar no certificado](#2-confiar-no-certificado-em-cada-pc) e abrir
+   `https://192.168.1.10/#tv`; entrar com o utilizador TV. Abre logo no modo TV.
+3. Ecrã inteiro: o botão "Ecrã inteiro" (aparece ao mexer o rato) ou F11.
+
+A sessão renova-se enquanto a página está aberta, por isso a TV não volta ao login sozinha. Para
+abrir em ecrã inteiro sempre que o PC liga, um atalho no arranque do Windows (`shell:startup`)
+com o Edge em modo quiosque:
+
+```
+"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --kiosk https://192.168.1.10/#tv --edge-kiosk-type=fullscreen
+```
+
+(No modo quiosque sai-se com Alt+F4.) Para tirar o acesso à TV, desativar o utilizador: a sessão
+é cortada de imediato.
+
 ## Migrar de uma instalação antiga
 
 Para trazer os dados de um PostgreSQL que já existia (por exemplo, o que a aplicação usava a correr

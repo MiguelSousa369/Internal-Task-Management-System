@@ -63,8 +63,9 @@ frontend/
 │   ├── views/
 │   │   ├── TasksView.tsx       # Lista principal de tarefas
 │   │   ├── DashboardView.tsx   # Indicadores gerais (Admin)
-│   │   ├── StatsView.tsx       # Ranking de produtividade (Admin)
-│   │   └── UsersView.tsx       # Gestão de utilizadores (Admin)
+│   │   ├── StatsView.tsx       # Ranking de produtividade
+│   │   ├── UsersView.tsx       # Gestão de utilizadores (Admin)
+│   │   └── TvMode.tsx          # Modo TV (ecrã na parede)
 │   ├── App.tsx             # Root: autenticação e routing por estado
 │   ├── main.tsx            # Entry point
 │   └── index.css           # Tailwind + estilos globais + animações
@@ -94,9 +95,10 @@ Não usa React Router. A navegação é feita por estado interno no `App.tsx`:
 | View | Quem vê |
 |---|---|
 | `tasks` | Todos (vista por defeito) |
-| `dashboard` | Admin |
-| `stats` | Admin |
+| `dashboard` | Todos |
+| `stats` | Todos |
 | `users` | Admin |
+| Modo TV (`/#tv`) | Todos (botão na navbar); o perfil TV só vê esta |
 
 ---
 
@@ -131,6 +133,21 @@ Tabela de utilizadores com criação, edição e desativação.
 
 ---
 
+### Modo TV (`TvMode.tsx`)
+Para um ecrã na parede. Abre pelo botão com o ícone de TV na navbar, pelo endereço `/#tv` (para
+ser a página inicial de uma TV) ou logo após o login de um utilizador com perfil **TV**.
+
+- Ecrã inteiro quando o browser deixa, tudo ampliado com o ecrã (desenhado como num ecrã de
+  1600px de largura); o ecrã não adormece (Wake Lock) onde o browser o permite.
+- Cabeçalho com os contadores do dia (urgentes, sem responsável, em tratamento, concluídas hoje),
+  a hora e a data.
+- Três colunas — Urgentes, Novas, Em Tratamento — com as mais antigas primeiro. Pedidos criados há
+  menos de 10 minutos têm um ponto laranja.
+- Atualiza a cada 5 segundos. Quando uma coluna não cabe, passa sozinha à página seguinte a cada
+  12 segundos ("1 / 3" no topo da coluna, barra no rodapé).
+- Os controlos (Ecrã inteiro, Sair) aparecem ao mexer o rato; Esc sai. Com o perfil TV, "Sair"
+  termina a sessão e Esc não faz nada.
+
 ### Detalhe da tarefa
 Modal com os dados, as ações (assumir, libertar, concluir, reabrir, prioridade, editar, eliminar) e
 as observações. Cada observação pode ser editada pelo autor (fica marcada como "editado") e apagada
@@ -158,6 +175,8 @@ pelo autor ou por um Admin; os botões aparecem ao passar o rato.
 ---
 
 ## Permissões por Role
+
+O perfil **TV** só vê o modo TV (lista de tarefas e contadores); não abre tarefas nem altera nada.
 
 | Ação | Admin | Técnico | Rececionista |
 |---|:---:|:---:|:---:|

@@ -16,6 +16,11 @@ Alterações relevantes à Gestão de Tarefas. As versões seguem
 - Guia de instalação em [docs/deploy.md](docs/deploy.md).
 
 ### Backend
+- Perfil **TV** (só visualização): acesso apenas a `GET /api/tasks` e `GET /api/dashboard`
+  (migração `role_tv`).
+- O contentor do backend corre à hora de Portugal (`TZ=Europe/Lisbon`): "concluídas hoje" e as
+  estatísticas deixam de contar o dia em UTC.
+- `GET /api/users/tecnicos` passa a exigir um dos perfis de trabalho (não o TV).
 - Sessões com renovação automática: o token dura 24 horas (`SESSION_HOURS`) e é renovado (header
   `X-Session-Token`) enquanto a app está a ser usada - deixa de cair a meio do dia de trabalho.
 - Desativar um utilizador ou mudar-lhe o perfil tem efeito imediato (o `authGuard` confirma-o na
@@ -32,6 +37,9 @@ Alterações relevantes à Gestão de Tarefas. As versões seguem
 - As migrações do Prisma passam a estar no repositório (necessárias para `migrate deploy`).
 
 ### Frontend
+- **Modo TV** para um ecrã na parede: ecrã inteiro, letra grande, colunas Urgentes / Novas / Em
+  Tratamento com páginas automáticas, contadores do dia, hora e data; atualiza a cada 5 segundos.
+  Abre pelo botão na navbar, em `/#tv`, ou direto com um utilizador de perfil TV.
 - Quando a sessão expira, a app volta ao login com o aviso "A sessão expirou" (antes ficava a dar
   erros até se carregar em Sair).
 - Editar e apagar observações no detalhe da tarefa (marcadas como "editado").

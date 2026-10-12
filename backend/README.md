@@ -199,6 +199,9 @@ O login aceita no máximo 20 tentativas falhadas por IP a cada 15 minutos.
 
 ## Roles e Permissões
 
+O perfil **TV** é para um ecrã na parede (modo TV no frontend): só tem acesso a `GET /api/tasks` e
+`GET /api/dashboard`. Qualquer outro pedido dá `403`.
+
 | Ação | Admin | Técnico | Rececionista |
 |---|:---:|:---:|:---:|
 | Login | ✅ | ✅ | ✅ |
