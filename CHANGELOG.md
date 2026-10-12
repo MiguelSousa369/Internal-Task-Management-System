@@ -16,8 +16,9 @@ Alterações relevantes à Gestão de Tarefas. As versões seguem
 - Guia de instalação em [docs/deploy.md](docs/deploy.md).
 
 ### Backend
-- As Rececionistas também podem editar tarefas (`PUT /api/tasks/:id`); assumir, concluir, reabrir
-  e eliminar continuam só para Técnicos e Admin.
+- As Rececionistas também podem editar tarefas (`PUT /api/tasks/:id`) e eliminá-las
+  (`DELETE /api/tasks/:id`, ex.: um problema que se resolveu sozinho); assumir, concluir e reabrir
+  continuam só para Técnicos e Admin.
 - Perfil **TV** (só visualização): acesso apenas a `GET /api/tasks` e `GET /api/dashboard`
   (migração `role_tv`).
 - O contentor do backend corre à hora de Portugal (`TZ=Europe/Lisbon`): "concluídas hoje" e as

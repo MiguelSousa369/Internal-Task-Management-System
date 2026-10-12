@@ -217,7 +217,7 @@ O perfil **TV** é para um ecrã na parede (modo TV no frontend): só tem acesso
 | Editar tarefa | ✅ | ✅ | ✅ |
 | Concluir tarefa | ✅ | ✅ | ❌ |
 | Reabrir tarefa | ✅ | ✅ | ❌ |
-| Eliminar tarefa | ✅ | ❌ | ❌ |
+| Eliminar tarefa | ✅ | ❌ | ✅ |
 | Gerir utilizadores | ✅ | ❌ | ❌ |
 | Dashboard / Stats | ✅ | ✅ | ✅ |
 
@@ -255,7 +255,7 @@ O perfil **TV** é para um ecrã na parede (modo TV no frontend): só tem acesso
 | PUT | `/api/tasks/:id/priority` | Todos | Alterar prioridade |
 | PUT | `/api/tasks/:id/complete` | Técnico, Admin | Concluir tarefa |
 | PUT | `/api/tasks/:id/reopen` | Técnico, Admin | Reabrir tarefa concluída |
-| DELETE | `/api/tasks/:id` | Admin | Eliminar tarefa |
+| DELETE | `/api/tasks/:id` | Admin, Rececionista | Eliminar tarefa |
 
 ### Comentários
 
