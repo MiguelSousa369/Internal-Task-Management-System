@@ -197,7 +197,7 @@ O perfil **TV** só vê o modo TV (lista de tarefas e contadores); não abre tar
 | Apagar comentário de outros | ✅ | ❌ | ❌ |
 | Alterar prioridade | ✅ | ✅ | ✅ |
 | Assumir / Libertar | ✅ | ✅ | ❌ |
-| Editar tarefa | ✅ | ✅ | ❌ |
+| Editar tarefa | ✅ | ✅ | ✅ |
 | Concluir / Reabrir | ✅ | ✅ | ❌ |
 | Eliminar tarefa | ✅ | ❌ | ❌ |
 | Dashboard / Stats | ✅ | ✅ | ✅ |
