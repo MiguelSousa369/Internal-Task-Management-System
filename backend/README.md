@@ -53,6 +53,17 @@ JWT_SECRET="uma_string_longa_aleatoria_e_segura"
 PORT=3000
 ```
 
+Opcionais (ver `.env.example`):
+
+| Variável | Por omissão | Função |
+|---|---|---|
+| `FRONTEND_ORIGIN` | `http://localhost:5173` | Origens permitidas por CORS (separadas por vírgula) |
+| `TRUST_PROXY` | `false` | `true` atrás de um reverse proxy (o Caddy em produção) |
+| `RATE_LIMIT_MAX` | `2000` | Pedidos por IP a cada 15 minutos |
+| `LOGIN_RATE_LIMIT_MAX` | `20` | Logins falhados por IP a cada 15 minutos |
+
+Em produção (`NODE_ENV=production`) a API recusa arrancar sem `JWT_SECRET`.
+
 ---
 
 ## Base de Dados
@@ -65,13 +76,14 @@ npx prisma migrate dev --name init
 
 ### Criar o primeiro administrador
 
-Em ambiente de produção, usa este comando para criar o utilizador Admin inicial:
+Na instalação com Docker o `deploy/setup` já cria o `admin` (ver [docs/deploy.md](../docs/deploy.md)).
+À mão, usa este comando para criar um utilizador Admin:
 
 ```bash
 ADMIN_NOME="Administrador" ADMIN_USERNAME="admin" ADMIN_PASSWORD="supersecret" npm run create-admin
 ```
 
-O script valida que os três campos estão presentes, que a password tem mínimo 6 caracteres, e que o username ainda não existe na base de dados. Após criar o Admin, podes criar os restantes utilizadores através da aplicação.
+Com `-- --if-empty` só cria o Admin se ainda não houver nenhum utilizador. O script valida que os três campos estão presentes, que a password tem mínimo 6 caracteres, e que o username ainda não existe na base de dados. Após criar o Admin, podes criar os restantes utilizadores através da aplicação.
 
 ### Popular com dados de exemplo (apenas desenvolvimento)
 
@@ -100,6 +112,13 @@ O servidor fica disponível em `http://localhost:3000`.
 
 A documentação Swagger fica disponível em `http://localhost:3000/api-docs`.
 
+### Produção
+
+Em produção corre em Docker (`backend/Dockerfile`, usado por `deploy/docker-compose.yml`): a imagem
+compila o TypeScript (`npm run build`) e, ao arrancar, aplica as migrações pendentes
+(`prisma migrate deploy`) antes de iniciar a API (`npm start`). Ver
+[docs/deploy.md](../docs/deploy.md).
+
 ---
 
 ## Estrutura de Pastas
@@ -109,7 +128,8 @@ backend/
 ├── prisma/
 │   ├── schema.prisma       # Modelos da base de dados
 │   ├── seed.ts             # Dados de exemplo
-│   └── migrations/         # Migrações automáticas do Prisma
+│   ├── createAdmin.ts      # Criação de um Admin (npm run create-admin)
+│   └── migrations/         # Migrações do Prisma (versionadas; aplicadas em produção)
 ├── src/
 │   ├── controllers/        # Recebem o request, validam, chamam o service
 │   ├── routes/             # Definição de endpoints e middlewares por rota
@@ -121,6 +141,7 @@ backend/
 │   ├── docs/               # Ficheiros YAML para Swagger UI
 │   └── server.ts           # Ponto de entrada da aplicação
 ├── logs/                   # Logs gerados automaticamente
+├── Dockerfile              # Imagem de produção
 ├── .env.example
 ├── package.json
 ├── tsconfig.json
@@ -150,7 +171,7 @@ Request → Route → Middleware (auth/role) → Controller → Service → Pris
 
 ## Autenticação
 
-Todas as rotas (exceto `/api/auth/login`) requerem autenticação via JWT.
+Todas as rotas (exceto `/api/auth/login` e `/api/health`) requerem autenticação via JWT.
 
 O token é obtido no login e deve ser enviado em todas as chamadas seguintes:
 
@@ -158,7 +179,7 @@ O token é obtido no login e deve ser enviado em todas as chamadas seguintes:
 Authorization: Bearer <token>
 ```
 
-O token expira ao fim de **8 horas**.
+O token expira ao fim de **8 horas**. O login aceita no máximo 20 tentativas falhadas por IP a cada 15 minutos.
 
 ---
 
@@ -170,6 +191,8 @@ O token expira ao fim de **8 horas**.
 | Ver tarefas | ✅ | ✅ | ✅ |
 | Criar tarefa | ✅ | ✅ | ✅ |
 | Adicionar comentário | ✅ | ✅ | ✅ |
+| Apagar comentário próprio | ✅ | ✅ | ✅ |
+| Apagar comentário de outros | ✅ | ❌ | ❌ |
 | Alterar prioridade | ✅ | ✅ | ✅ |
 | Assumir tarefa | ✅ | ✅ | ❌ |
 | Libertar tarefa | ✅ | ✅ | ❌ |
@@ -222,6 +245,13 @@ O token expira ao fim de **8 horas**.
 |---|---|---|
 | GET | `/api/tasks/:id/comments` | Listar comentários |
 | POST | `/api/tasks/:id/comments` | Adicionar comentário |
+| DELETE | `/api/tasks/:id/comments/:commentId` | Apagar comentário (autor ou Admin) |
+
+### Estado
+
+| Método | Endpoint | Descrição |
+|---|---|---|
+| GET | `/api/health` | Verificação de saúde (sem autenticação) — usado pelo deploy |
 
 ### Dashboard (Admin only)
 
@@ -303,6 +333,10 @@ Os logs são escritos automaticamente na pasta `logs/`:
 ```bash
 # Desenvolvimento com hot reload
 npm run dev
+
+# Compilar e correr a versão compilada
+npm run build
+npm start
 
 # Visualizar a base de dados no browser
 npx prisma studio

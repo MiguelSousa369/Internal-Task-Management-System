@@ -20,6 +20,9 @@ Interface web para gestão e acompanhamento de pedidos de suporte. Consome a API
 - Node.js 20+
 - Backend a correr em `http://localhost:3000`
 
+O frontend chama a API no próprio endereço (`/api`). Em desenvolvimento o Vite encaminha `/api`
+para `http://localhost:3000` (ver `vite.config.ts`); em produção é o Caddy que o faz.
+
 ---
 
 ## Instalação
@@ -47,7 +50,7 @@ A aplicação fica disponível em `http://localhost:5173`.
 frontend/
 ├── src/
 │   ├── api/
-│   │   └── api.ts          # Todas as chamadas ao backend (fetch)
+│   │   └── api.ts          # Todas as chamadas ao backend (fetch, base /api)
 │   ├── components/
 │   │   ├── Login.tsx       # Página de login (ecrã completo)
 │   │   ├── Navbar.tsx      # Barra de navegação fixa no topo
@@ -107,6 +110,10 @@ Inclui pesquisa com debounce e filtros por estado e prioridade (combinados com A
 
 A lista atualiza automaticamente a cada **5 segundos** em background, sem recarregar a página nem mostrar skeletons.
 
+Quando aparece uma tarefa nova, o browser mostra uma notificação (pede autorização na primeira
+vez). Os browsers só permitem notificações em HTTPS válido ou em `localhost` — em produção, cada
+PC tem de confiar no certificado (ver [docs/deploy.md](../docs/deploy.md)).
+
 ### Dashboard (`dashboard`) — Admin
 Cinco contadores em tempo real: tarefas abertas, urgentes, sem responsável, em tratamento e concluídas hoje.
 
@@ -150,4 +157,6 @@ Tabela de utilizadores com criação, edição e desativação.
 npm run build
 ```
 
-Os ficheiros gerados ficam em `dist/` e podem ser servidos por qualquer servidor estático (Nginx, Apache, etc.).
+Os ficheiros gerados ficam em `dist/`. Em produção são compilados e servidos pelo Caddy
+(`deploy/Dockerfile.web`), que também encaminha `/api` para o backend — ver
+[docs/deploy.md](../docs/deploy.md).
