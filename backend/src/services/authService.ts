@@ -1,8 +1,6 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import * as userService from './userService';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'mudar_em_producao';
+import { signSession } from '../lib/session';
 
 export const login = async (username: string, password: string) => {
   const user = await userService.findByUsername(username);
@@ -26,11 +24,7 @@ export const login = async (username: string, password: string) => {
     throw err;
   }
 
-  const token = jwt.sign(
-    { id: user.id, role: user.role },
-    JWT_SECRET,
-    { expiresIn: '8h' }
-  );
+  const token = signSession(user);
 
   const { passwordHash: _, ...userWithoutPassword } = user;
   return { user: userWithoutPassword, token };

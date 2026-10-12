@@ -15,6 +15,7 @@ import dashboardRoutes from './routes/dashboardRoutes';
 import { errorHandler } from './middlewares/errorHandler';
 import { requestLogger } from './middlewares/logger';
 import { logger } from './utils/logger';
+import { SESSION_HEADER } from './lib/session';
 
 if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
   logger.error('JWT_SECRET não definido — obrigatório em produção.');
@@ -33,7 +34,8 @@ app.use(helmet());
 // proxy de /api, por isso o CORS só é preciso se alguém aceder à API a partir de outra origem.
 app.use(cors({
   origin: (process.env.FRONTEND_ORIGIN || 'http://localhost:5173').split(',').map(o => o.trim()),
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  exposedHeaders: [SESSION_HEADER]
 }));
 
 const limiter = rateLimit({
