@@ -11,6 +11,8 @@ Interface web para gestão e acompanhamento de pedidos de suporte. Consome a API
 | React 19 + TypeScript | UI e tipagem |
 | Vite 8 | Dev server e build |
 | Tailwind CSS 3 | Estilização |
+| lucide-react | Ícones (SVG) |
+| @fontsource/inter | Fonte Inter, servida com a aplicação (sem Google Fonts) |
 | Fetch API | Chamadas ao backend |
 
 ---
@@ -55,7 +57,7 @@ frontend/
 │   │   ├── Login.tsx       # Página de login (ecrã completo)
 │   │   ├── Navbar.tsx      # Barra de navegação fixa no topo
 │   │   ├── TaskCard.tsx    # Card de tarefa com cor por prioridade
-│   │   ├── TaskDetail.tsx  # Modal com detalhe, ações e comentários
+│   │   ├── TaskDetail.tsx  # Modal com detalhe, ações e observações (editar / apagar)
 │   │   ├── CreateTask.tsx  # Modal de criação de pedido
 │   │   └── ConfirmModal.tsx # Modal de confirmação genérico
 │   ├── views/
@@ -101,10 +103,10 @@ Lista principal organizada em secções colapsáveis:
 
 | Secção | Conteúdo |
 |---|---|
-| 🔥 Urgentes | Tarefas com prioridade Urgente não concluídas — sempre no topo |
-| 📥 Novas | Tarefas com prioridade Normal sem responsável |
-| 🔧 Em Tratamento | Tarefas com prioridade Normal com técnico atribuído |
-| ✅ Concluídas | Oculta por defeito — clicar para expandir |
+| Urgentes | Tarefas com prioridade Urgente não concluídas — sempre no topo |
+| Novas | Tarefas com prioridade Normal sem responsável |
+| Em Tratamento | Tarefas com prioridade Normal com técnico atribuído |
+| Concluídas | Oculta por defeito — clicar para expandir |
 
 Inclui pesquisa com debounce e filtros por estado e prioridade (combinados com AND).
 
@@ -125,12 +127,29 @@ Tabela de utilizadores com criação, edição e desativação.
 
 ---
 
+### Detalhe da tarefa
+Modal com os dados, as ações (assumir, libertar, concluir, reabrir, prioridade, editar, eliminar) e
+as observações. Cada observação pode ser editada pelo autor (fica marcada como "editado") e apagada
+pelo autor ou por um Admin; os botões aparecem ao passar o rato.
+
+---
+
+## Design
+
+- Ícones SVG do [lucide-react](https://lucide.dev) — sem emojis. Importar só os ícones usados
+  (`import { Flame } from 'lucide-react'`).
+- Fonte Inter, incluída no build (`@fontsource/inter`, importada em `main.tsx`): funciona sem
+  internet.
+- Componentes base em `index.css` (`btn-*`, `btn-icon`, `badge-*`, `task-card`, `form-*`,
+  `modal-*`). As classes `badge-${estado}` e `task-card-${prioridade}` são montadas em runtime e
+  estão na `safelist` do `tailwind.config.js` — acrescentar lá novos valores.
+
 ## Cores (tema Litinfor)
 
 | Nome | Hex | Uso |
 |---|---|---|
-| `primary-600` | `#5b068c` | Botão principal, navbar ativa, badges Normal |
-| `accent-500` | `#ff5e00` | Botão "Novo Pedido", border cards Urgente |
+| `primary-600` | `#5b068c` | Botão principal, navbar ativa, borda dos cards Normal |
+| `accent-500` | `#ff5e00` | Botão "Novo Pedido", borda dos cards Urgente |
 
 ---
 
@@ -141,6 +160,9 @@ Tabela de utilizadores com criação, edição e desativação.
 | Ver tarefas | ✅ | ✅ | ✅ |
 | Criar pedido | ✅ | ✅ | ✅ |
 | Adicionar comentário | ✅ | ✅ | ✅ |
+| Editar comentário próprio | ✅ | ✅ | ✅ |
+| Apagar comentário próprio | ✅ | ✅ | ✅ |
+| Apagar comentário de outros | ✅ | ❌ | ❌ |
 | Alterar prioridade | ✅ | ✅ | ✅ |
 | Assumir / Libertar | ✅ | ✅ | ❌ |
 | Editar tarefa | ✅ | ✅ | ❌ |

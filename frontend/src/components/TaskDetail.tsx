@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  getTask, getComments, addComment,
+  X, Hand, RotateCcw, Undo2, CircleCheck, Pencil, Trash2, Send, Check, Flame, TriangleAlert,
+} from 'lucide-react';
+import {
+  getTask, getComments, addComment, updateComment, deleteComment,
   startTask, releaseTask, completeTask, reopenTask,
   updateTaskPriority, updateTask, deleteTask,
-  getUsers,
+  getTecnicos,
 } from '../api/api';
 import { Task, TaskComment, User } from '../App';
 import { ConfirmModal } from './ConfirmModal';
@@ -31,7 +34,7 @@ function formatDate(dateStr: string) {
 export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdated }: Props) {
   const [task, setTask] = useState<Task | null>(null);
   const [comments, setComments] = useState<TaskComment[]>([]);
-  const [tecnicos, setTecnicos] = useState<User[]>([]);
+  const [tecnicos, setTecnicos] = useState<{ id: number; nome: string }[]>([]);
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState('');
   const [actionError, setActionError] = useState('');
@@ -40,6 +43,8 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
   const [confirm, setConfirm] = useState<null | { title: string; message: string; action: () => Promise<void>; danger?: boolean }>(null);
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({ descricao: '', cliente: '', contacto: '', prioridade: 'Normal', tecnicoSolicitadoId: '' });
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingCommentText, setEditingCommentText] = useState('');
 
   const load = useCallback(async () => {
     try {
@@ -56,10 +61,9 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
   useEffect(() => { load(); }, [load]);
 
   useEffect(() => {
+    // /users/tecnicos (técnicos ativos) está aberto a todos; /users é só para Admin.
     if (isTecnico) {
-      getUsers()
-        .then((users: User[]) => setTecnicos(users.filter((u: User) => u.role === 'Tecnico' && u.ativo)))
-        .catch(() => {});
+      getTecnicos().then(setTecnicos).catch(() => {});
     }
   }, [isTecnico]);
 
@@ -86,6 +90,8 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
     }
   };
 
+  const reloadComments = async () => setComments(await getComments(taskId));
+
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim()) return;
@@ -93,12 +99,42 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
     try {
       await addComment(taskId, newComment.trim());
       setNewComment('');
-      const c = await getComments(taskId);
-      setComments(c);
+      await reloadComments();
     } catch (err: unknown) {
       setActionError(err instanceof Error ? err.message : 'Erro');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const startEditComment = (c: TaskComment) => {
+    setEditingCommentId(c.id);
+    setEditingCommentText(c.comentario);
+  };
+
+  const handleCommentEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingCommentId === null || !editingCommentText.trim()) return;
+    setActionError('');
+    setSubmitting(true);
+    try {
+      await updateComment(taskId, editingCommentId, editingCommentText.trim());
+      setEditingCommentId(null);
+      await reloadComments();
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : 'Erro');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCommentDelete = async (commentId: number) => {
+    setActionError('');
+    try {
+      await deleteComment(taskId, commentId);
+      await reloadComments();
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : 'Erro');
     }
   };
 
@@ -134,7 +170,9 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
     return (
       <div className="modal-overlay" onClick={onClose}>
         <div className="modal-box p-6 text-center">
-          <p className="text-red-600">{error || 'Tarefa não encontrada'}</p>
+          <p className="text-red-600 flex items-center justify-center gap-2">
+            <TriangleAlert className="w-4 h-4" /> {error || 'Tarefa não encontrada'}
+          </p>
           <button className="btn-ghost mt-4" onClick={onClose}>Fechar</button>
         </div>
       </div>
@@ -151,27 +189,32 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
           <div className="flex items-start justify-between gap-4 p-5 border-b border-gray-100">
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap gap-1.5 mb-2">
-                <span className={`badge badge-${task.prioridade}`}>{task.prioridade}</span>
+                <span className={`badge badge-${task.prioridade}`}>
+                  {task.prioridade === 'Urgente' && <Flame className="w-3 h-3" />}
+                  {task.prioridade}
+                </span>
                 <span className={`badge badge-${task.estado}`}>{estadoLabel[task.estado]}</span>
               </div>
               <h2 className="font-semibold text-gray-900 text-base leading-snug">{task.cliente}</h2>
               {task.contacto && (
-                <p className="text-sm text-gray-400 mt-0.5">{task.contacto}</p>
+                <p className="text-sm text-gray-500 mt-0.5">{task.contacto}</p>
               )}
             </div>
-            <button onClick={onClose} className="btn-ghost btn-sm shrink-0">✕</button>
+            <button onClick={onClose} className="btn-icon shrink-0" aria-label="Fechar">
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
           <div className="p-5 space-y-5">
             {actionError && (
-              <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">
-                {actionError}
+              <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
+                <TriangleAlert className="w-4 h-4 shrink-0" /> {actionError}
               </div>
             )}
 
             {/* Edit form */}
             {editing ? (
-              <form onSubmit={handleEditSubmit} className="space-y-3 bg-gray-50 rounded-xl p-4">
+              <form onSubmit={handleEditSubmit} className="space-y-3 bg-gray-50 border border-gray-100 rounded-lg p-4">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Editar Tarefa</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -205,7 +248,7 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                 </div>
                 <div className="flex gap-2 justify-end pt-1">
                   <button type="button" className="btn-ghost btn-sm" onClick={() => setEditing(false)}>Cancelar</button>
-                  <button type="submit" className="btn-primary btn-sm">Guardar</button>
+                  <button type="submit" className="btn-primary btn-sm"><Check className="w-3.5 h-3.5" /> Guardar</button>
                 </div>
               </form>
             ) : (
@@ -248,14 +291,16 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
 
             {/* Actions */}
             {!editing && (
-              <div className="flex flex-wrap gap-2 pt-1 border-t border-gray-100">
+              <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-gray-100">
                 {/* Assumir */}
                 {isTecnico && task.estado !== 'Concluido' && (
                   <button
                     className="btn-primary btn-sm"
                     onClick={() => runAction(() => startTask(task.id))}
                   >
-                    {isHandling ? '↺ Reassumir' : 'Assumir'}
+                    {isHandling
+                      ? <><RotateCcw className="w-3.5 h-3.5" /> Reassumir</>
+                      : <><Hand className="w-3.5 h-3.5" /> Assumir</>}
                   </button>
                 )}
                 {/* Libertar */}
@@ -268,7 +313,7 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                       action: () => runAction(() => releaseTask(task.id)),
                     })}
                   >
-                    Libertar
+                    <Undo2 className="w-3.5 h-3.5" /> Libertar
                   </button>
                 )}
                 {/* Concluir */}
@@ -281,7 +326,7 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                       action: () => runAction(() => completeTask(task.id)),
                     })}
                   >
-                    Concluir
+                    <CircleCheck className="w-3.5 h-3.5" /> Concluir
                   </button>
                 )}
                 {/* Reabrir */}
@@ -290,23 +335,24 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                     className="btn-ghost btn-sm"
                     onClick={() => runAction(() => reopenTask(task.id))}
                   >
-                    Reabrir
+                    <RotateCcw className="w-3.5 h-3.5" /> Reabrir
                   </button>
                 )}
                 {/* Prioridade */}
-                <div className="flex items-center gap-1">
-                  <select
-                    className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-primary-500"
-                    value={task.prioridade}
-                    onChange={e => runAction(() => updateTaskPriority(task.id, e.target.value))}
-                  >
-                    <option value="Normal">Normal</option>
-                    <option value="Urgente">Urgente</option>
-                  </select>
-                </div>
+                <select
+                  className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                  value={task.prioridade}
+                  onChange={e => runAction(() => updateTaskPriority(task.id, e.target.value))}
+                  aria-label="Prioridade"
+                >
+                  <option value="Normal">Normal</option>
+                  <option value="Urgente">Urgente</option>
+                </select>
                 {/* Editar */}
                 {isTecnico && (
-                  <button className="btn-ghost btn-sm" onClick={() => setEditing(true)}>Editar</button>
+                  <button className="btn-ghost btn-sm" onClick={() => setEditing(true)}>
+                    <Pencil className="w-3.5 h-3.5" /> Editar
+                  </button>
                 )}
                 {/* Eliminar */}
                 {isAdmin && (
@@ -319,7 +365,7 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                       danger: true,
                     })}
                   >
-                    Eliminar
+                    <Trash2 className="w-3.5 h-3.5" /> Eliminar
                   </button>
                 )}
               </div>
@@ -332,19 +378,70 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
               </p>
 
               {comments.length === 0 && (
-                <p className="text-sm text-gray-400 italic mb-3">Sem observações ainda.</p>
+                <p className="text-sm text-gray-400 mb-3">Sem observações ainda.</p>
               )}
 
-              <div className="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1">
-                {comments.map(c => (
-                  <div key={c.id} className="bg-gray-50 rounded-lg p-3 text-sm animate-fade-in">
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="font-medium text-primary-700 text-xs">{c.user.nome}</span>
-                      <span className="text-xs text-gray-400">{formatDate(c.dataCriacao)}</span>
+              <div className="space-y-2 mb-4 max-h-64 overflow-y-auto pr-1">
+                {comments.map(c => {
+                  // Editar: só o autor. Apagar: o autor ou um Admin (o backend verifica o mesmo).
+                  const isAuthor = c.user.id === user.id;
+                  const canDelete = isAuthor || isAdmin;
+                  const isEditingThis = editingCommentId === c.id;
+                  return (
+                    <div key={c.id} className="group bg-gray-50 border border-gray-100 rounded-lg p-3 text-sm animate-fade-in">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <span className="font-medium text-primary-700 text-xs">{c.user.nome}</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-gray-400">
+                            {formatDate(c.dataCriacao)}
+                            {c.editadoEm && (
+                              <span title={`Editado em ${formatDate(c.editadoEm)}`}> · editado</span>
+                            )}
+                          </span>
+                          {!isEditingThis && canDelete && (
+                            <div className="flex items-center sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
+                              {isAuthor && (
+                                <button className="btn-icon-sm" title="Editar" aria-label="Editar observação"
+                                  onClick={() => startEditComment(c)}>
+                                  <Pencil className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                              <button className="btn-icon-sm hover:text-red-600 hover:bg-red-50" title="Apagar" aria-label="Apagar observação"
+                                onClick={() => setConfirm({
+                                  title: 'Apagar observação',
+                                  message: 'A observação é apagada definitivamente. Tens a certeza?',
+                                  action: () => handleCommentDelete(c.id),
+                                  danger: true,
+                                })}>
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {isEditingThis ? (
+                        <form onSubmit={handleCommentEdit} className="space-y-2">
+                          <textarea
+                            className="form-textarea"
+                            rows={2}
+                            value={editingCommentText}
+                            onChange={e => setEditingCommentText(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Escape') setEditingCommentId(null); }}
+                            autoFocus
+                          />
+                          <div className="flex gap-2 justify-end">
+                            <button type="button" className="btn-ghost btn-sm" onClick={() => setEditingCommentId(null)}>Cancelar</button>
+                            <button type="submit" className="btn-primary btn-sm" disabled={submitting || !editingCommentText.trim()}>
+                              <Check className="w-3.5 h-3.5" /> Guardar
+                            </button>
+                          </div>
+                        </form>
+                      ) : (
+                        <p className="text-gray-700 whitespace-pre-wrap">{c.comentario}</p>
+                      )}
                     </div>
-                    <p className="text-gray-700 whitespace-pre-wrap">{c.comentario}</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <form onSubmit={handleComment} className="flex gap-2">
@@ -354,8 +451,8 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                   value={newComment}
                   onChange={e => setNewComment(e.target.value)}
                 />
-                <button type="submit" className="btn-primary btn-sm shrink-0" disabled={submitting || !newComment.trim()}>
-                  Enviar
+                <button type="submit" className="btn-primary shrink-0" disabled={submitting || !newComment.trim()}>
+                  <Send className="w-4 h-4" /> Enviar
                 </button>
               </form>
             </div>
@@ -368,6 +465,7 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
           title={confirm.title}
           message={confirm.message}
           danger={confirm.danger}
+          confirmLabel={confirm.danger ? 'Apagar' : 'Confirmar'}
           onConfirm={() => { confirm.action(); setConfirm(null); }}
           onCancel={() => setConfirm(null)}
         />

@@ -104,6 +104,16 @@ export const addComment = (taskId: number, comentario: string) =>
     method: 'POST', headers: headers(true), body: JSON.stringify({ comentario }),
   }).then(handle);
 
+export const updateComment = (taskId: number, commentId: number, comentario: string) =>
+  fetch(`${BASE_URL}/tasks/${taskId}/comments/${commentId}`, {
+    method: 'PUT', headers: headers(true), body: JSON.stringify({ comentario }),
+  }).then(handle);
+
+export const deleteComment = (taskId: number, commentId: number) =>
+  fetch(`${BASE_URL}/tasks/${taskId}/comments/${commentId}`, {
+    method: 'DELETE', headers: headers(true),
+  }).then(handle);
+
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 export const getDashboard = () =>
   fetch(`${BASE_URL}/dashboard`, { headers: headers(true) }).then(handle);

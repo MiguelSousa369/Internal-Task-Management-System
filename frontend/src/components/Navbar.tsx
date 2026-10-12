@@ -1,3 +1,4 @@
+import { ListTodo, LayoutDashboard, ChartColumn, Users, LogOut, type LucideIcon } from 'lucide-react';
 import { User, View } from '../App';
 import logo from '../assets/logo.png';
 
@@ -13,38 +14,29 @@ const roleLabel: Record<string, string> = {
   Admin: 'Administrador', Tecnico: 'Técnico', Rececionista: 'Rececionista',
 };
 
-const roleColor: Record<string, string> = {
-  Admin: 'bg-primary-100 text-primary-700',
-  Tecnico: 'bg-blue-100 text-blue-700',
-  Rececionista: 'bg-gray-100 text-gray-600',
-};
-
 function initials(nome: string) {
   return nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
 }
 
 export function Navbar({ user, currentView, setView, isAdmin, onLogout }: Props) {
-  const navItem = (view: View, label: string) => (
+  const navItem = (view: View, label: string, Icon: LucideIcon) => (
     <button
       key={view}
       onClick={() => setView(view)}
-      className={`relative px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+      aria-current={currentView === view ? 'page' : undefined}
+      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
         currentView === view
-          ? 'text-white shadow-md'
-          : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
+          ? 'bg-primary-50 text-primary-700'
+          : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
       }`}
     >
-      {currentView === view && (
-        <span className="absolute inset-0 rounded-xl"
-          style={{ background: 'linear-gradient(135deg, #5b068c, #7a0cbf)' }} />
-      )}
-      <span className="relative">{label}</span>
+      <Icon className="w-4 h-4" />
+      <span className="hidden md:inline">{label}</span>
     </button>
   );
 
   return (
-    <header className="fixed top-0 inset-x-0 z-[60] glass border-b border-gray-100/80"
-      style={{ boxShadow: '0 1px 16px rgba(0,0,0,0.06)' }}>
+    <header className="fixed top-0 inset-x-0 z-[60] bg-white/95 backdrop-blur border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center gap-4">
 
         {/* Logo */}
@@ -56,26 +48,23 @@ export function Navbar({ user, currentView, setView, isAdmin, onLogout }: Props)
 
         {/* Nav */}
         <nav className="flex items-center gap-1 flex-1">
-          {navItem('tasks', 'Tarefas')}
-          {navItem('dashboard', 'Dashboard')}
-          {navItem('stats', 'Estatísticas')}
-          {isAdmin && navItem('users', 'Utilizadores')}
+          {navItem('tasks', 'Tarefas', ListTodo)}
+          {navItem('dashboard', 'Dashboard', LayoutDashboard)}
+          {navItem('stats', 'Estatísticas', ChartColumn)}
+          {isAdmin && navItem('users', 'Utilizadores', Users)}
         </nav>
 
         {/* User */}
         <div className="flex items-center gap-3 shrink-0">
           <div className="hidden sm:flex flex-col items-end">
             <p className="text-sm font-semibold text-gray-800 leading-tight">{user.nome}</p>
-            <span className={`text-xs px-1.5 py-0.5 rounded-md font-medium ${roleColor[user.role]}`}>
-              {roleLabel[user.role]}
-            </span>
+            <p className="text-xs text-gray-500">{roleLabel[user.role]}</p>
           </div>
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
-            style={{ background: 'linear-gradient(135deg, #5b068c, #ff5e00)' }}>
+          <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-xs font-semibold text-white shrink-0">
             {initials(user.nome)}
           </div>
-          <button onClick={onLogout} className="btn-ghost btn-sm text-gray-500 hover:text-red-600 hover:border-red-200">
-            Sair
+          <button onClick={onLogout} className="btn-icon hover:text-red-600 hover:bg-red-50" title="Terminar sessão" aria-label="Terminar sessão">
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>

@@ -1,5 +1,10 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  // Classes montadas em runtime (`badge-${task.estado}`, `task-card-${task.prioridade}`).
+  safelist: [
+    { pattern: /^badge-(Novo|EmTratamento|Concluido|Normal|Urgente)$/ },
+    { pattern: /^task-card-(Normal|Urgente)$/ },
+  ],
   theme: {
     extend: {
       colors: {
@@ -14,7 +19,7 @@ export default {
           800: '#662500', 900: '#331200',
         },
       },
-      fontFamily: { sans: ['Roboto', 'sans-serif'] },
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
       animation: {
         'fade-in':      'fadeIn 0.25s ease-out',
         'slide-up':     'slideUp 0.35s cubic-bezier(0.34,1.36,0.64,1) both',
@@ -32,8 +37,8 @@ export default {
       },
       keyframes: {
         fadeIn:    { from: { opacity: '0' }, to: { opacity: '1' } },
-        slideUp:   { from: { opacity: '0', transform: 'translateY(16px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-        scaleIn:   { from: { opacity: '0', transform: 'scale(0.92)' }, to: { opacity: '1', transform: 'scale(1)' } },
+        slideUp:   { from: { opacity: '0', transform: 'translateY(6px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        scaleIn:   { from: { opacity: '0', transform: 'scale(0.97)' }, to: { opacity: '1', transform: 'scale(1)' } },
         bounceIn:  { '0%': { opacity: '0', transform: 'scale(0.8)' }, '70%': { transform: 'scale(1.04)' }, '100%': { opacity: '1', transform: 'scale(1)' } },
         pulseGlow: {
           '0%,100%': { boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 0 0 0 rgba(255,94,0,0.35)' },

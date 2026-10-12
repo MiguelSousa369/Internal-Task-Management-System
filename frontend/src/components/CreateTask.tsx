@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { X, TriangleAlert } from 'lucide-react';
 import { createTask, getTecnicos } from '../api/api';
 
 interface Props {
@@ -51,13 +52,13 @@ export function CreateTask({ onClose, onCreated }: Props) {
       <div className="modal-box" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="font-semibold text-gray-900">Novo Pedido</h2>
-          <button onClick={onClose} className="btn-ghost btn-sm">✕</button>
+          <button onClick={onClose} className="btn-icon" aria-label="Fechar"><X className="w-4 h-4" /></button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           {error && (
-            <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">
-              {error}
+            <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
+              <TriangleAlert className="w-4 h-4 shrink-0" /> {error}
             </div>
           )}
 

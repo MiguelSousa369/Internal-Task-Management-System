@@ -1,3 +1,4 @@
+import { Flame, Clock } from 'lucide-react';
 import { Task } from '../App';
 
 interface Props {
@@ -8,10 +9,6 @@ interface Props {
 
 const estadoLabel: Record<string, string> = {
   Novo: 'Novo', EmTratamento: 'Em Tratamento', Concluido: 'Concluído',
-};
-
-const prioridadeIcon: Record<string, string> = {
-  Urgente: '🔥', Normal: '📋',
 };
 
 function timeAgo(dateStr: string): string {
@@ -35,14 +32,18 @@ export function TaskCard({ task, onClick, style }: Props) {
       {/* Priority + Status */}
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className={`badge badge-${task.prioridade}`}>
-            {prioridadeIcon[task.prioridade]} {task.prioridade}
-          </span>
+          {task.prioridade === 'Urgente' && (
+            <span className="badge badge-Urgente">
+              <Flame className="w-3 h-3" /> Urgente
+            </span>
+          )}
           <span className={`badge badge-${task.estado}`}>
             {estadoLabel[task.estado]}
           </span>
         </div>
-        <span className="text-xs text-gray-400 shrink-0 mt-0.5">{timeAgo(task.dataCriacao)}</span>
+        <span className="flex items-center gap-1 text-xs text-gray-400 shrink-0 mt-0.5">
+          <Clock className="w-3 h-3" /> {timeAgo(task.dataCriacao)}
+        </span>
       </div>
 
       {/* Client */}
@@ -57,11 +58,10 @@ export function TaskCard({ task, onClick, style }: Props) {
       )}
 
       {/* Footer */}
-      <div className="mt-3 pt-2.5 border-t border-gray-50 flex items-center gap-2">
+      <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center gap-2">
         {task.emTratamentoPor ? (
           <>
-            <div className="w-5 h-5 rounded-lg flex items-center justify-center text-white text-[9px] font-bold shrink-0"
-              style={{ background: 'linear-gradient(135deg, #5b068c, #7a0cbf)' }}>
+            <div className="w-5 h-5 rounded-md bg-primary-600 flex items-center justify-center text-white text-[9px] font-bold shrink-0">
               {task.emTratamentoPor.nome.charAt(0).toUpperCase()}
             </div>
             <span className="text-xs font-medium text-primary-700 truncate">{task.emTratamentoPor.nome}</span>

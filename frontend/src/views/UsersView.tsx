@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Plus, Pencil, UserX, X, TriangleAlert } from 'lucide-react';
 import { getUsers, createUser, updateUser, deleteUser } from '../api/api';
 import { User } from '../App';
 import { ConfirmModal } from '../components/ConfirmModal';
@@ -92,17 +93,19 @@ export function UsersView({ token: _token }: { token: string }) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-semibold text-gray-800">Utilizadores</h1>
-        <button className="btn-accent" onClick={openCreate}>+ Novo Utilizador</button>
+        <button className="btn-accent" onClick={openCreate}><Plus className="w-4 h-4" /> Novo Utilizador</button>
       </div>
 
       {error && (
-        <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg mb-4">{error}</div>
+        <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg mb-4 flex items-center gap-2">
+          <TriangleAlert className="w-4 h-4 shrink-0" /> {error}
+        </div>
       )}
 
       {loading ? (
         <div className="text-center py-16 text-gray-400 text-sm">A carregar...</div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-left">
@@ -128,8 +131,12 @@ export function UsersView({ token: _token }: { token: string }) {
                   </td>
                   <td className="px-5 py-3 text-right">
                     <div className="flex items-center gap-2 justify-end">
-                      <button className="btn-ghost btn-sm" onClick={() => openEdit(u)}>Editar</button>
-                      <button className="btn-danger btn-sm" onClick={() => setConfirmDelete(u)}>Desativar</button>
+                      <button className="btn-ghost btn-sm" onClick={() => openEdit(u)}><Pencil className="w-3.5 h-3.5" /> Editar</button>
+                      {u.ativo && (
+                        <button className="btn-ghost btn-sm hover:text-red-600 hover:border-red-200 hover:bg-red-50" onClick={() => setConfirmDelete(u)}>
+                          <UserX className="w-3.5 h-3.5" /> Desativar
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -145,7 +152,7 @@ export function UsersView({ token: _token }: { token: string }) {
           <div className="modal-box" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
               <h2 className="font-semibold text-gray-900">{editing ? 'Editar Utilizador' : 'Novo Utilizador'}</h2>
-              <button className="btn-ghost btn-sm" onClick={() => setShowForm(false)}>✕</button>
+              <button className="btn-icon" onClick={() => setShowForm(false)} aria-label="Fechar"><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={handleSubmit} className="p-5 space-y-4">
               {formError && (

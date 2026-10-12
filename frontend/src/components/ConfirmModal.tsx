@@ -11,7 +11,7 @@ export function ConfirmModal({ title, message, confirmLabel = 'Confirmar', dange
   return (
     <div className="modal-overlay" onClick={onCancel}>
       <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-scale-in mx-4"
+        className="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 animate-scale-in mx-4"
         onClick={e => e.stopPropagation()}
       >
         <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>

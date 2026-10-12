@@ -35,6 +35,7 @@ export interface TaskComment {
   taskId: number;
   comentario: string;
   dataCriacao: string;
+  editadoEm?: string | null;
   user: { id: number; nome: string };
 }
 
