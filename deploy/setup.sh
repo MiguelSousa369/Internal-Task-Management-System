@@ -121,7 +121,10 @@ ok
 
 step 5/7 'Dados'
 echo
-if [ "$EXISTING" = 0 ]; then
+# Oferece a importação sempre que a base de dados ainda não tem utilizadores (não só na primeira
+# vez: uma instalação anterior pode ter ficado a meio).
+USERS=$(docker compose exec -T db psql -U tarefas -d tarefas -Atc 'SELECT count(*) FROM "User"' </dev/null 2>/dev/null | tr -d '\r')
+if [ "${USERS:-0}" = 0 ]; then
   SOURCE=''
   [ -f ../backend/.env ] && SOURCE=$(grep '^DATABASE_URL=' ../backend/.env | head -n 1 | cut -d= -f2- | tr -d '"')
   if [ -n "$SOURCE" ]; then
@@ -184,6 +187,7 @@ if [ -n "$ADMIN_PASSWORD" ]; then
 fi
 echo
 echo "  Em cada PC, uma vez, para o browser confiar no HTTPS (PowerShell como Administrador):"
-echo "    iwr http://$HOST/ca.crt -OutFile \$env:TEMP\\tarefas-ca.crt; Import-Certificate \$env:TEMP\\tarefas-ca.crt -CertStoreLocation Cert:\\LocalMachine\\Root"
+# printf '%s' e não echo: o echo do sh transforma "\t" (de \tarefas-ca.crt) num tab.
+printf '    %s\n' "iwr http://$HOST/ca.crt -OutFile \$env:TEMP\\tarefas-ca.crt; Import-Certificate \$env:TEMP\\tarefas-ca.crt -CertStoreLocation Cert:\\LocalMachine\\Root"
 echo "  Detalhes e outras opções: docs/deploy.md"
 echo

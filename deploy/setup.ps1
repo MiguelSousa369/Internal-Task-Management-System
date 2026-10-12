@@ -155,7 +155,10 @@ Ok
 
 Step '5/7' 'Dados'
 Write-Host ''
-if (-not $existing) {
+# Oferece a importação sempre que a base de dados ainda não tem utilizadores (não só na primeira
+# vez: uma instalação anterior pode ter ficado a meio).
+$users = (Invoke-Docker 'compose exec -T db psql -U tarefas -d tarefas -Atc "SELECT count(*) FROM \"User\""' | Select-Object -First 1)
+if ("$users".Trim() -eq '0' -or -not "$users".Trim()) {
     $source = $null
     $backendEnv = Join-Path $PSScriptRoot '..\backend\.env'
     if (Test-Path -LiteralPath $backendEnv) { $source = Read-EnvValue $backendEnv 'DATABASE_URL' }
