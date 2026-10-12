@@ -1,0 +1,69 @@
+# Produção. Ver docs/deploy.md.
+#
+#   ./setup.sh   (Linux)   ou   setup.ps1   (Windows)   - uma vez: gera o .env e arranca tudo
+#   docker compose up -d --build                       - depois de atualizar o código
+#
+# Só o serviço `web` (Caddy) está acessível de fora, nas portas 80/443. O backend e a base de
+# dados ficam apenas na rede interna do Docker.
+
+name: tarefas
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tarefas
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?corre primeiro o setup}
+      POSTGRES_DB: tarefas
+    volumes:
+      # A partir do PostgreSQL 18 os dados ficam numa subpasta por versão de /var/lib/postgresql.
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U tarefas']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    # Sem `ports:` de propósito - a base de dados nunca fica exposta.
+
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    # Definições opcionais do .env (RATE_LIMIT_MAX...), ver backend/.env.example.
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: '3000'
+      DATABASE_URL: postgresql://tarefas:${POSTGRES_PASSWORD}@db:5432/tarefas
+      JWT_SECRET: ${JWT_SECRET:?corre primeiro o setup}
+      TRUST_PROXY: 'true'
+      FRONTEND_ORIGIN: https://${TAREFAS_HOST}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - backend-logs:/app/logs
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.web
+    restart: unless-stopped
+    environment:
+      TAREFAS_HOST: ${TAREFAS_HOST:?corre primeiro o setup}
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - caddy-data:/data # autoridade de certificação e certificados - manter este volume
+      - caddy-config:/config
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
+  backend-logs:
+  caddy-data:
+  caddy-config:

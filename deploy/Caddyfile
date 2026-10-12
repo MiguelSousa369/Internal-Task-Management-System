@@ -1,0 +1,48 @@
+# Rede interna: o HTTPS usa a autoridade de certificação do próprio Caddy (tls internal), sem
+# Let's Encrypt. Cada PC tem de confiar nessa autoridade uma vez (ver docs/deploy.md); o
+# certificado raiz está em http://<endereço>/ca.crt.
+{
+	# Quem acede por IP não envia SNI: usa o certificado deste endereço.
+	default_sni {$TAREFAS_HOST}
+}
+
+https://{$TAREFAS_HOST} {
+	tls internal
+	encode gzip
+
+	# API e documentação Swagger.
+	handle /api/* {
+		reverse_proxy backend:3000
+	}
+	handle /api-docs* {
+		reverse_proxy backend:3000
+	}
+
+	# O frontend (single-page app: caminhos desconhecidos servem o index.html).
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+}
+
+# HTTP: só o certificado raiz (para instalar nos PCs); tudo o resto vai para HTTPS.
+http://{$TAREFAS_HOST} {
+	handle /ca.crt {
+		root * /data/caddy/pki/authorities/local
+		rewrite * /root.crt
+		header Content-Type application/x-x509-ca-cert
+		header Content-Disposition "attachment; filename=tarefas-ca.crt"
+		file_server
+	}
+	handle {
+		redir https://{$TAREFAS_HOST}{uri}
+	}
+}

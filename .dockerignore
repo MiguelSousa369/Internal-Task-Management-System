@@ -1,0 +1,12 @@
+# Contexto de build de deploy/Dockerfile.web e backend/Dockerfile (a raiz do repositório). Os
+# node_modules do host nunca entram numa imagem (são compilados para o SO do host), nem segredos.
+**/node_modules
+**/dist
+**/logs
+**/.env
+**/*.log
+**/*.tsbuildinfo
+.git
+docs
+deploy/.env
+deploy/*.sql

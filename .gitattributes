@@ -1,0 +1,3 @@
+# Scripts que correm em Linux: sempre LF, seja qual for a plataforma do checkout.
+*.sh text eol=lf
+deploy/Caddyfile text eol=lf
