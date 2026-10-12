@@ -22,8 +22,9 @@ contacto, prioridade (Normal / Urgente), técnico responsável e comentários.
 - **Comentários** — contexto e notas de cada pedido; o autor pode editá-los e o autor ou um Admin
   podem apagá-los.
 - **Dashboard e estatísticas** — contadores do dia e ranking de técnicos.
-- **Modo TV** — para um ecrã na parede: ecrã inteiro, letra grande, colunas Urgentes / Novas / Em
-  Tratamento e contadores do dia, a atualizar sozinho. Um utilizador com perfil TV só vê isto.
+- **Modo TV** — para um ecrã na parede: ecrã inteiro, letra grande, contadores do dia, em grelha
+  ou em colunas (Urgentes / Novas / Em Tratamento), com o número de cartões ajustável, a atualizar
+  sozinho. Um utilizador com perfil TV só vê isto.
 - **Utilizadores** — perfis Admin, Técnico, Rececionista e TV (só visualização), geridos pelo
   Admin.
 

@@ -37,8 +37,10 @@ Alterações relevantes à Gestão de Tarefas. As versões seguem
 - As migrações do Prisma passam a estar no repositório (necessárias para `migrate deploy`).
 
 ### Frontend
-- **Modo TV** para um ecrã na parede: ecrã inteiro, letra grande, colunas Urgentes / Novas / Em
-  Tratamento com páginas automáticas, contadores do dia, hora e data; atualiza a cada 5 segundos.
+- **Modo TV** para um ecrã na parede: ecrã inteiro, letra grande, contadores do dia, hora e data;
+  atualiza a cada 5 segundos e passa as páginas sozinho. Dois layouts à escolha — **Grelha**
+  (cartões aumentados para encher o ecrã) e **Colunas** (Urgentes / Novas / Em Tratamento, com a
+  largura para quem tem mais tarefas) — e o número de cartões ajustável; fica guardado no browser.
   Abre pelo botão na navbar, em `/#tv`, ou direto com um utilizador de perfil TV.
 - Quando a sessão expira, a app volta ao login com o aviso "A sessão expirou" (antes ficava a dar
   erros até se carregar em Sair).

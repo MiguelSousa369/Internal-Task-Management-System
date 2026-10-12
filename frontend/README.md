@@ -141,12 +141,21 @@ ser a página inicial de uma TV) ou logo após o login de um utilizador com perf
   1600px de largura); o ecrã não adormece (Wake Lock) onde o browser o permite.
 - Cabeçalho com os contadores do dia (urgentes, sem responsável, em tratamento, concluídas hoje),
   a hora e a data.
-- Três colunas — Urgentes, Novas, Em Tratamento — com as mais antigas primeiro. Pedidos criados há
-  menos de 10 minutos têm um ponto laranja.
-- Atualiza a cada 5 segundos. Quando uma coluna não cabe, passa sozinha à página seguinte a cada
-  12 segundos ("1 / 3" no topo da coluna, barra no rodapé).
-- Os controlos (Ecrã inteiro, Sair) aparecem ao mexer o rato; Esc sai. Com o perfil TV, "Sair"
-  termina a sessão e Esc não faz nada.
+- Dois layouts, à escolha nos controlos:
+  - **Grelha** — todas as tarefas numa grelha (urgentes, depois novas, depois em tratamento; as
+    mais antigas primeiro), cada cartão com a etiqueta do estado. **Cartões: Auto** mostra todas,
+    aumentadas para encher o ecrã; um número (4 a 20) mostra esse tanto por página, também
+    aumentados. Nunca ficam abaixo de um tamanho legível — o que não couber vai para a página
+    seguinte.
+  - **Colunas** — Urgentes / Novas / Em Tratamento. A largura vai para quem tem mais tarefas (uma
+    coluna cheia ganha sub-colunas) e as vazias ficam estreitas. **Por coluna: Auto** usa o
+    cartão normal; um número (2 a 8) mostra esse tanto por coluna, esticados à altura do ecrã.
+- Pedidos criados há menos de 10 minutos têm um ponto laranja.
+- Atualiza a cada 5 segundos. O que não cabe passa sozinho à página seguinte a cada 12 segundos
+  (indicação de página e barra no rodapé).
+- Os controlos (layout, número de cartões, Ecrã inteiro, Sair) aparecem ao mexer o rato; Esc sai.
+  Layout e número de cartões ficam guardados no browser. Com o perfil TV, "Sair" termina a sessão
+  e Esc não faz nada.
 
 ### Detalhe da tarefa
 Modal com os dados, as ações (assumir, libertar, concluir, reabrir, prioridade, editar, eliminar) e
