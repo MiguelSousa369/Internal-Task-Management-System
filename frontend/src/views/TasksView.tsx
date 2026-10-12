@@ -1,9 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { getTasks } from '../api/api';
 import { Task, User } from '../App';
 import { TaskCard } from '../components/TaskCard';
 import { TaskDetail } from '../components/TaskDetail';
 import { CreateTask } from '../components/CreateTask';
+
+import logo from '../assets/logo.png';
+
 
 interface Props {
   user: User;
@@ -62,6 +65,25 @@ function Section({ emoji, label, count, open, onToggle, children, empty }: Secti
   );
 }
 
+function dispatchNotification(task: Task) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+  const prioEmoji = task.prioridade === 'Urgente' ? '🔥' : '📋';
+  const estado = task.estado === 'Novo' ? 'Novo'
+    : task.estado === 'EmTratamento' ? 'Em Tratamento'
+    : 'Concluído';
+
+  new Notification(`${prioEmoji} Nova tarefa — ${task.cliente}`, {
+    body: [
+      task.descricao ? `📝 ${task.descricao}` : null,
+      task.contacto  ? `📞 ${task.contacto}`  : null,
+      `📌 ${estado}`,
+    ].filter(Boolean).join('\n'),
+    icon: logo,
+    tag: `task-${task.id}`,
+  });
+}
+
 export function TasksView({ user, isAdmin, isTecnico }: Props) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [search, setSearch] = useState('');
@@ -72,6 +94,8 @@ export function TasksView({ user, isAdmin, isTecnico }: Props) {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({ concluidas: true });
+  const knownIdsRef = useRef<Set<number>>(new Set());
+  const isFirstLoadRef = useRef(true);
 
   const load = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -81,7 +105,20 @@ export function TasksView({ user, isAdmin, isTecnico }: Props) {
       if (filterEstado) params.estado = filterEstado;
       if (filterPrioridade) params.prioridade = filterPrioridade;
       if (search.trim()) params.search = search.trim();
-      setTasks(await getTasks(params));
+      const fetched: Task[] = await getTasks(params);
+      setTasks(fetched);
+
+      if (isFirstLoadRef.current) {
+        fetched.forEach(t => knownIdsRef.current.add(t.id));
+        isFirstLoadRef.current = false;
+      } else {
+        fetched.forEach(t => {
+          if (!knownIdsRef.current.has(t.id)) {
+            knownIdsRef.current.add(t.id);
+            dispatchNotification(t);
+          }
+        });
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar tarefas');
     } finally {
@@ -98,6 +135,12 @@ export function TasksView({ user, isAdmin, isTecnico }: Props) {
     const id = setInterval(() => load(true), 5_000);
     return () => clearInterval(id);
   }, [load]);
+
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
 
   const urgentes     = tasks.filter(t => t.prioridade === 'Urgente' && t.estado !== 'Concluido');
   const novas        = tasks.filter(t => t.prioridade !== 'Urgente' && t.estado === 'Novo');
