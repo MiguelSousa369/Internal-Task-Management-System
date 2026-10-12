@@ -2,7 +2,9 @@
   "name": "task-management-backend",
   "version": "1.0.0",
   "scripts": {
-    "dev": "npx tsx watch src/server.ts",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
     "test": "vitest run",
     "create-admin": "tsx prisma/createAdmin.ts"
   },

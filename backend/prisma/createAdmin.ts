@@ -6,7 +6,15 @@ import 'dotenv/config';
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
+// --if-empty: só cria o admin se ainda não houver nenhum utilizador (usado pelo deploy/setup).
+const ifEmpty = process.argv.includes('--if-empty');
+
 async function main() {
+  if (ifEmpty && (await prisma.user.count()) > 0) {
+    console.log('Já existem utilizadores — nenhum admin criado.');
+    return;
+  }
+
   const nome = process.env.ADMIN_NOME;
   const username = process.env.ADMIN_USERNAME;
   const password = process.env.ADMIN_PASSWORD;

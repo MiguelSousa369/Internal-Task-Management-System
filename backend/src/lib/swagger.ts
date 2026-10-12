@@ -22,8 +22,8 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000/api',
-        description: 'Servidor de Desenvolvimento'
+        url: '/api',
+        description: 'Este servidor'
       }
     ]
   },
