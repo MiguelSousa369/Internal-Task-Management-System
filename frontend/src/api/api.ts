@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:3000/api';
+// Mesmo endereço que o frontend: em produção o Caddy encaminha /api para o backend, em
+// desenvolvimento o Vite faz proxy (ver vite.config.ts).
+const BASE_URL = '/api';
 
 const getToken = () => localStorage.getItem('token');
 
