@@ -124,7 +124,7 @@ paths:
           description: Não encontrada
     delete:
       tags: [Tarefas]
-      summary: Eliminar tarefa (apenas Admin)
+      summary: Eliminar tarefa (Admin / Rececionista)
       security:
         - bearerAuth: []
       parameters:

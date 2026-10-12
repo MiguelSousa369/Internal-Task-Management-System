@@ -352,7 +352,8 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                   <Pencil className="w-3.5 h-3.5" /> Editar
                 </button>
                 {/* Eliminar */}
-                {isAdmin && (
+                {/* Eliminar: Admin e Rececionista (o backend verifica o mesmo) */}
+                {(isAdmin || user.role === 'Rececionista') && (
                   <button
                     className="btn-danger btn-sm ml-auto"
                     onClick={() => setConfirm({

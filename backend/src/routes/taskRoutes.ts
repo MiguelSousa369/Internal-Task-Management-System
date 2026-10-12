@@ -21,7 +21,8 @@ const allRoles = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista'])];
 const viewRoles = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista', 'TV'])];
 const tecnicoOrAdmin = [authGuard, requireRole(['Admin', 'Tecnico'])];
 const anyAuthenticated = [authGuard, requireRole(['Admin', 'Tecnico', 'Rececionista'])];
-const adminOnly = [authGuard, requireRole(['Admin'])];
+// Eliminar: Admin e Rececionista (ex.: um problema que se resolveu sozinho antes de alguém pegar nele).
+const canDelete = [authGuard, requireRole(['Admin', 'Rececionista'])];
 
 router.get('/', ...viewRoles, getAll);
 router.get('/:id', ...allRoles, getById);
@@ -32,6 +33,6 @@ router.put('/:id/release', ...tecnicoOrAdmin, release);
 router.put('/:id/priority', ...anyAuthenticated, updatePriority);
 router.put('/:id/complete', ...tecnicoOrAdmin, complete);
 router.put('/:id/reopen', ...tecnicoOrAdmin, reopen);
-router.delete('/:id', ...adminOnly, remove);
+router.delete('/:id', ...canDelete, remove);
 
 export default router;
