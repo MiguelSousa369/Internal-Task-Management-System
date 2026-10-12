@@ -191,6 +191,7 @@ O token expira ao fim de **8 horas**. O login aceita no máximo 20 tentativas fa
 | Ver tarefas | ✅ | ✅ | ✅ |
 | Criar tarefa | ✅ | ✅ | ✅ |
 | Adicionar comentário | ✅ | ✅ | ✅ |
+| Editar comentário próprio | ✅ | ✅ | ✅ |
 | Apagar comentário próprio | ✅ | ✅ | ✅ |
 | Apagar comentário de outros | ✅ | ❌ | ❌ |
 | Alterar prioridade | ✅ | ✅ | ✅ |
@@ -245,6 +246,7 @@ O token expira ao fim de **8 horas**. O login aceita no máximo 20 tentativas fa
 |---|---|---|
 | GET | `/api/tasks/:id/comments` | Listar comentários |
 | POST | `/api/tasks/:id/comments` | Adicionar comentário |
+| PUT | `/api/tasks/:id/comments/:commentId` | Editar comentário (só o autor; preenche `editadoEm`) |
 | DELETE | `/api/tasks/:id/comments/:commentId` | Apagar comentário (autor ou Admin) |
 
 ### Estado

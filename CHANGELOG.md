@@ -16,6 +16,8 @@ Alterações relevantes à Gestão de Tarefas. As versões seguem
 - Guia de instalação em [docs/deploy.md](docs/deploy.md).
 
 ### Backend
+- Editar comentários: `PUT /api/tasks/:id/comments/:commentId` (só o autor); novo campo
+  `editadoEm` (migração `comentario_editado`).
 - Apagar comentários: `DELETE /api/tasks/:id/comments/:commentId` (o autor ou um Admin).
 - `GET /api/health`.
 - Limite de 20 logins falhados por IP a cada 15 minutos; limite geral configurável
@@ -26,6 +28,14 @@ Alterações relevantes à Gestão de Tarefas. As versões seguem
 - As migrações do Prisma passam a estar no repositório (necessárias para `migrate deploy`).
 
 ### Frontend
+- Editar e apagar observações no detalhe da tarefa (marcadas como "editado").
+- Design mais sóbrio: ícones SVG (lucide-react) em vez de emojis, botões e badges sólidos, sem
+  animações contínuas, ecrã de login simplificado, ícones na navegação.
+- Fonte Inter incluída na aplicação (deixa de depender do Google Fonts) e favicon.
+- Corrigido: as cores dos badges de estado e a borda dos cards não apareciam (classes removidas pelo
+  Tailwind no build).
+- Corrigido: um Técnico ao abrir uma tarefa recebia um erro 403 e não via a lista de técnicos ao
+  editar.
 - Notificação do browser quando chega uma tarefa nova.
 - A API é chamada no próprio endereço (`/api`): o Caddy encaminha em produção e o Vite em
   desenvolvimento.

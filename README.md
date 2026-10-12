@@ -19,7 +19,8 @@ contacto, prioridade (Normal / Urgente), técnico responsável e comentários.
   atualização automática a cada 5 segundos e notificação do browser quando chega um pedido novo.
 - **Fluxo** — qualquer técnico assume um pedido, liberta-o ou conclui-o; um pedido concluído pode
   ser reaberto.
-- **Comentários** — contexto e notas de cada pedido; o autor ou um Admin podem apagá-los.
+- **Comentários** — contexto e notas de cada pedido; o autor pode editá-los e o autor ou um Admin
+  podem apagá-los.
 - **Dashboard e estatísticas** — contadores do dia e ranking de técnicos.
 - **Utilizadores** — três perfis (Admin, Técnico, Rececionista), geridos pelo Admin.
 
