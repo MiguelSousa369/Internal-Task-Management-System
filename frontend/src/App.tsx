@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { SESSION_EXPIRED_EVENT } from './api/api';
 import { Login } from './components/Login';
 import { Navbar } from './components/Navbar';
 import { TasksView } from './views/TasksView';
@@ -48,10 +49,12 @@ function App() {
     return stored ? JSON.parse(stored) : null;
   });
   const [view, setView] = useState<View>('tasks');
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   const handleLogin = (t: string, u: User) => {
     localStorage.setItem('token', t);
     localStorage.setItem('user', JSON.stringify(u));
+    setSessionExpired(false);
     setToken(t);
     setUser(u);
   };
@@ -61,10 +64,21 @@ function App() {
     localStorage.removeItem('user');
     setToken(null);
     setUser(null);
+    setView('tasks');
   };
 
+  // A sessão expirou (24h sem uso) ou o utilizador foi desativado: volta ao login com o aviso.
+  useEffect(() => {
+    const onExpired = () => {
+      handleLogout();
+      setSessionExpired(true);
+    };
+    window.addEventListener(SESSION_EXPIRED_EVENT, onExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired);
+  }, []);
+
   if (!user || !token) {
-    return <Login onSuccess={handleLogin} />;
+    return <Login onSuccess={handleLogin} notice={sessionExpired ? 'A sessão expirou. Inicia sessão novamente.' : undefined} />;
   }
 
   const isAdmin = user.role === 'Admin';

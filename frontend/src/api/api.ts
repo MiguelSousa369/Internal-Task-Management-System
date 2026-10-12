@@ -9,7 +9,18 @@ const headers = (auth = false): HeadersInit => ({
   ...(auth && getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
 });
 
+// Sessão com renovação automática: o backend manda um token novo neste header enquanto a app
+// está a ser usada. Quando a sessão expira (401 num pedido autenticado), a App volta ao login.
+const SESSION_HEADER = 'X-Session-Token';
+export const SESSION_EXPIRED_EVENT = 'session-expired';
+
 const handle = async (res: Response) => {
+  const renewed = res.headers.get(SESSION_HEADER);
+  if (renewed && getToken()) localStorage.setItem('token', renewed);
+
+  if (res.status === 401 && getToken() && !res.url.endsWith('/auth/login')) {
+    window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
+  }
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: 'Erro desconhecido' }));
     throw new Error(err.error || `Erro ${res.status}`);

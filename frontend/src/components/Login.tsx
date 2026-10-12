@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { CircleAlert, LoaderCircle, ArrowRight } from 'lucide-react';
+import { CircleAlert, LoaderCircle, ArrowRight, Clock } from 'lucide-react';
 import { login } from '../api/api';
 import { User } from '../App';
 import logo from '../assets/logo.png';
 
 interface Props {
   onSuccess: (token: string, user: User) => void;
+  notice?: string;
 }
 
-export function Login({ onSuccess }: Props) {
+export function Login({ onSuccess, notice }: Props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -46,6 +47,14 @@ export function Login({ onSuccess }: Props) {
             <h1 className="text-xl font-semibold text-gray-900 mb-1">Gestão de Tarefas</h1>
             <p className="text-sm text-gray-500">Inicia sessão para continuar</p>
           </div>
+
+          {/* Aviso (ex.: sessão expirada) */}
+          {notice && !error && (
+            <div className="mb-5 px-4 py-3 bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-lg flex items-center gap-2">
+              <Clock className="w-4 h-4 shrink-0" />
+              <span>{notice}</span>
+            </div>
+          )}
 
           {/* Error */}
           {error && (
