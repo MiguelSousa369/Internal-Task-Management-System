@@ -61,6 +61,7 @@ Opcionais (ver `.env.example`):
 | `TRUST_PROXY` | `false` | `true` atrás de um reverse proxy (o Caddy em produção) |
 | `RATE_LIMIT_MAX` | `2000` | Pedidos por IP a cada 15 minutos |
 | `LOGIN_RATE_LIMIT_MAX` | `20` | Logins falhados por IP a cada 15 minutos |
+| `SESSION_HOURS` | `24` | A sessão expira ao fim destas horas sem uso |
 
 Em produção (`NODE_ENV=production`) a API recusa arrancar sem `JWT_SECRET`.
 
@@ -179,7 +180,20 @@ O token é obtido no login e deve ser enviado em todas as chamadas seguintes:
 Authorization: Bearer <token>
 ```
 
-O token expira ao fim de **8 horas**. O login aceita no máximo 20 tentativas falhadas por IP a cada 15 minutos.
+### Sessões
+
+A sessão **renova-se automaticamente** enquanto a app está a ser usada e só expira ao fim de
+**24 horas sem uso** (`SESSION_HOURS`):
+
+- O token do login é válido por `SESSION_HOURS`.
+- Em cada pedido autenticado com um token com mais de 15 minutos, a API devolve um token novo no
+  header `X-Session-Token`; o frontend guarda-o e passa a usá-lo. Quem tem a app aberta (a lista
+  atualiza a cada 5 segundos) nunca fica sem sessão.
+- O `authGuard` confirma em cada pedido que o utilizador existe e está ativo, e usa o perfil da base
+  de dados: desativar alguém ou mudar-lhe o perfil tem efeito imediato.
+- Token inválido ou expirado, ou utilizador desativado → `401 Sessão expirada`.
+
+O login aceita no máximo 20 tentativas falhadas por IP a cada 15 minutos.
 
 ---
 

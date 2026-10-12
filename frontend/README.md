@@ -81,6 +81,10 @@ Sem autenticação, o utilizador vê apenas a página de login (campo username +
 
 Após login bem-sucedido, o token JWT e os dados do utilizador ficam guardados em `localStorage`. Todas as chamadas à API enviam o token no header `Authorization: Bearer <token>`.
 
+A sessão renova-se sozinha: quando a resposta traz o header `X-Session-Token`, `api.ts` guarda o
+token novo. Se um pedido autenticado receber `401` (24 horas sem uso, ou utilizador desativado),
+`api.ts` emite o evento `session-expired` e a `App` volta ao login com o aviso "A sessão expirou".
+
 ---
 
 ## Routing

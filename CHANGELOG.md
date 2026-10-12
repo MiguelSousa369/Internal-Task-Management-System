@@ -16,6 +16,10 @@ Alterações relevantes à Gestão de Tarefas. As versões seguem
 - Guia de instalação em [docs/deploy.md](docs/deploy.md).
 
 ### Backend
+- Sessões com renovação automática: o token dura 24 horas (`SESSION_HOURS`) e é renovado (header
+  `X-Session-Token`) enquanto a app está a ser usada - deixa de cair a meio do dia de trabalho.
+- Desativar um utilizador ou mudar-lhe o perfil tem efeito imediato (o `authGuard` confirma-o na
+  base de dados); sessão inválida ou expirada passa a dar `401`.
 - Editar comentários: `PUT /api/tasks/:id/comments/:commentId` (só o autor); novo campo
   `editadoEm` (migração `comentario_editado`).
 - Apagar comentários: `DELETE /api/tasks/:id/comments/:commentId` (o autor ou um Admin).
@@ -28,6 +32,8 @@ Alterações relevantes à Gestão de Tarefas. As versões seguem
 - As migrações do Prisma passam a estar no repositório (necessárias para `migrate deploy`).
 
 ### Frontend
+- Quando a sessão expira, a app volta ao login com o aviso "A sessão expirou" (antes ficava a dar
+  erros até se carregar em Sair).
 - Editar e apagar observações no detalhe da tarefa (marcadas como "editado").
 - Design mais sóbrio: ícones SVG (lucide-react) em vez de emojis, botões e badges sólidos, sem
   animações contínuas, ecrã de login simplificado, ícones na navegação.

@@ -193,5 +193,6 @@ PCs não precisam de nada novo.
 - Passwords e segredo JWT gerados na instalação; a API recusa arrancar em produção sem
   `JWT_SECRET`.
 - Login limitado a 20 tentativas falhadas por IP a cada 15 minutos; pedidos em geral, a 2000.
-- As passwords dos utilizadores são guardadas com bcrypt; as sessões (JWT) expiram ao fim de 8
-  horas.
+- As passwords dos utilizadores são guardadas com bcrypt. As sessões renovam-se enquanto a app
+  está a ser usada e expiram ao fim de 24 horas sem uso (`SESSION_HOURS`); desativar um utilizador
+  corta-lhe a sessão de imediato.
