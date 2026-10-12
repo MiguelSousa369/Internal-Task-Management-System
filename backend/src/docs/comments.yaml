@@ -49,6 +49,40 @@ paths:
           description: Tarefa não encontrada
 
   /tasks/{id}/comments/{commentId}:
+    put:
+      tags: [Comentários]
+      summary: Editar um comentário (só o autor)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: commentId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [comentario]
+              properties:
+                comentario:
+                  type: string
+                  example: Cliente ligou de volta, problema resolvido.
+      responses:
+        '200':
+          description: Comentário editado (editadoEm preenchido)
+        '403':
+          description: Não é o autor
+        '404':
+          description: Comentário não encontrado
     delete:
       tags: [Comentários]
       summary: Apagar um comentário (autor ou Admin)

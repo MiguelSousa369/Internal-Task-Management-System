@@ -64,6 +64,7 @@ model TaskComment {
   userId      Int
   comentario  String
   dataCriacao DateTime @default(now())
+  editadoEm   DateTime?
 
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id])
