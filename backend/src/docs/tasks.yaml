@@ -88,7 +88,7 @@ paths:
           description: Não encontrada
     put:
       tags: [Tarefas]
-      summary: Editar dados da tarefa (Técnico / Admin)
+      summary: Editar dados da tarefa (todos os roles)
       security:
         - bearerAuth: []
       parameters:

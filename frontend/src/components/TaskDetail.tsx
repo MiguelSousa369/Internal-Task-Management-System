@@ -60,12 +60,11 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
 
   useEffect(() => { load(); }, [load]);
 
+  // Lista de técnicos para o formulário de edição (todos os perfis editam tarefas).
+  // /users/tecnicos (técnicos ativos) está aberto a todos; /users é só para Admin.
   useEffect(() => {
-    // /users/tecnicos (técnicos ativos) está aberto a todos; /users é só para Admin.
-    if (isTecnico) {
-      getTecnicos().then(setTecnicos).catch(() => {});
-    }
-  }, [isTecnico]);
+    getTecnicos().then(setTecnicos).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (task && editing) {
@@ -348,12 +347,10 @@ export function TaskDetail({ taskId, user, isAdmin, isTecnico, onClose, onUpdate
                   <option value="Normal">Normal</option>
                   <option value="Urgente">Urgente</option>
                 </select>
-                {/* Editar */}
-                {isTecnico && (
-                  <button className="btn-ghost btn-sm" onClick={() => setEditing(true)}>
-                    <Pencil className="w-3.5 h-3.5" /> Editar
-                  </button>
-                )}
+                {/* Editar (todos os perfis) */}
+                <button className="btn-ghost btn-sm" onClick={() => setEditing(true)}>
+                  <Pencil className="w-3.5 h-3.5" /> Editar
+                </button>
                 {/* Eliminar */}
                 {isAdmin && (
                   <button

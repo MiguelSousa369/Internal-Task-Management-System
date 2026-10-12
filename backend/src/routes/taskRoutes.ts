@@ -26,7 +26,7 @@ const adminOnly = [authGuard, requireRole(['Admin'])];
 router.get('/', ...viewRoles, getAll);
 router.get('/:id', ...allRoles, getById);
 router.post('/', ...allRoles, create);
-router.put('/:id', ...tecnicoOrAdmin, update);
+router.put('/:id', ...allRoles, update);
 router.put('/:id/start', ...tecnicoOrAdmin, start);
 router.put('/:id/release', ...tecnicoOrAdmin, release);
 router.put('/:id/priority', ...anyAuthenticated, updatePriority);
